@@ -17,10 +17,13 @@ class BaseModel():
     def _set_attrs(self, **kwargs):
         for key in self.FIELDS:
             setattr(self, key, kwargs.get(key, None))
+
+    def serialize(self):
+        data = dict()
+        for key in self.FIELDS: data[key] = getattr(self, key)
+        return data
             
 class TestModel(BaseModel):
     FIELDS = dict(
         name=()
     )
-
-    
