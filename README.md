@@ -36,11 +36,11 @@ recommendation algorithms
 
 1. Markov Process
 
-2. CF
+2. CF (Collaborative Filtering)
 
-3. CD
+3. CB (Content-Based Filtering)
 
-4. CSP
+4. CSP (Constraint Satisfaction Problem)
 
 5. others
 
