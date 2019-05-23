@@ -1,1 +1,4 @@
-{}
+{
+  "test/test_model.py": true,
+  "test_model.py": true
+}

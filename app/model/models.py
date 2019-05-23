@@ -23,7 +23,3 @@ class BaseModel():
         for key in self.FIELDS: data[key] = getattr(self, key)
         return data
             
-class TestModel(BaseModel):
-    FIELDS = dict(
-        name=()
-    )
