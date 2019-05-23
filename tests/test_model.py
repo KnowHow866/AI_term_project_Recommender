@@ -4,14 +4,9 @@ Write all test of system here
 If it become too large later, we would split this file 
 '''
 
-from app.model.models import BaseModel
-
-class TestModel(BaseModel):
-    FIELDS = dict(
-        name=()
-    )
+from app.model.models import User
 
 def test_model():
-    person = TestModel(name='Marry')
-    assert person.name == 'Marry'
+    user = User(name='user', username='username', password='userpassword'.encode('utf-8'))
+    assert user.name == 'user'
     

@@ -1,25 +1,39 @@
 
-class BaseModel():
-    def __init__(self, *args, **kwargs):
-        '''
-        Init Model
+# native module
+import hashlib
+import sys, inspect
+# orm
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
 
-        1. Init model fields, delegate to _set_attrs
-        Model have to define all field in advance, it mean all model need to have FIELDS attr
-        FIELDS = dict(
-            fieldname: ()
+class ModelManager():
+    '''
+    A singleton used to auto mange models in app
+    '''
+    ModelBase = declarative_base()
+
+    @classmethod
+    def get_orm_model_classes(cls) -> 'list of all ORM class':
+        models = list()
+        for name, obj in inspect.getmembers(sys.modules[__name__]):
+            if inspect.isclass(obj) and type(obj) == type(ModelManager.ModelBase):
+                models.append(obj)
+        return models
+
+    @classmethod
+    def init_model_base(cls, engine=None):
+        cls.ModelBase.metadata.create_all(engine)
+
+class User(ModelManager.ModelBase):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    username = Column(String)
+    password = Column(String)
+
+    def __repr__(self):
+        return "User('{}','{}', '{}')".format(
+            self.name,
+            self.username,
+            self.password
         )
-        '''
-        if hasattr(self, 'FIELDS') is False: raise Exception('Model fields must be defined')
-        self._set_attrs(**kwargs)
-        super().__init__()
-        
-    def _set_attrs(self, **kwargs):
-        for key in self.FIELDS:
-            setattr(self, key, kwargs.get(key, None))
-
-    def serialize(self):
-        data = dict()
-        for key in self.FIELDS: data[key] = getattr(self, key)
-        return data
-            
