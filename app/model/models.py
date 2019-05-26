@@ -1,9 +1,9 @@
 
 # native module
 import hashlib
-import sys, inspect
+import sys, inspect, abc, random
 # orm
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Float
 from sqlalchemy.ext.declarative import declarative_base
 
 class ModelManager():
@@ -16,7 +16,7 @@ class ModelManager():
     def get_orm_model_classes(cls) -> 'list of all ORM class':
         models = list()
         for name, obj in inspect.getmembers(sys.modules[__name__]):
-            if inspect.isclass(obj) and type(obj) == type(ModelManager.ModelBase):
+            if inspect.isclass(obj) and isinstance(obj, type(cls.ModelBase)):
                 models.append(obj)
         return models
 
@@ -24,16 +24,42 @@ class ModelManager():
     def init_model_base(cls, engine=None):
         cls.ModelBase.metadata.create_all(engine)
 
-class User(ModelManager.ModelBase):
-    __tablename__ = 'users'
+class LoaderMixin():
+    '''
+    This mixin provide ORM Model ability to bt load to database by loader
+    But the inherit Class must define _loader_fields by itself
+    '''
+    _loader_fields = list()
+
+    @classmethod
+    def get_loader_fields(cls) -> 'dict':
+        return dict(
+            loader_fields=cls._loader_fields
+        )
+
+class User(ModelManager.ModelBase, LoaderMixin):
+    __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     name = Column(String)
     username = Column(String)
     password = Column(String)
 
-    def __repr__(self):
-        return "User('{}','{}', '{}')".format(
-            self.name,
-            self.username,
-            self.password
-        )
+    _loader_fields = ('name', 'username', 'password')
+
+    def __str__(self):
+        return 'User %s (%s)' % (self.id, self.name)
+
+class Food(ModelManager.ModelBase, LoaderMixin):
+    __tablename__ = 'food'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    price = Column(Integer)
+    calories = Column(Float)
+    carbohydrate = Column(Float)
+    protein = Column(Float)
+    fat = Column(Float)
+    
+    _loader_fields = ('name', 'price', 'calories')
+
+    def __str__(self):
+        return 'Food %s (%s, %s, %s)' % (self.id, self.name, self.price, self.calories)
