@@ -17,7 +17,7 @@ def test_model():
     session = DBManager.get_session()
 
     random_name = ''.join([random.choice(string.ascii_letters + string.digits) for _ in range(6)])
-    user = User(name=random_name, username='--', password='--')
+    user = User(name=random_name)
     session.add(user)
     session.commit()
     user = session.query(User).filter(User.name==random_name).first()
@@ -31,4 +31,3 @@ def test_loader():
 
 def test_detach_db():
     DBManager.detach_db(db_name='test')
-    

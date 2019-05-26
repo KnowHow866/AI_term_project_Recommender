@@ -41,10 +41,8 @@ class User(ModelManager.ModelBase, LoaderMixin):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    username = Column(String)
-    password = Column(String)
 
-    _loader_fields = ('name', 'username', 'password')
+    _loader_fields = ('name')
 
     def __str__(self):
         return 'User %s (%s)' % (self.id, self.name)
