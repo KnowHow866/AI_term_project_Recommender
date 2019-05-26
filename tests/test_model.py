@@ -25,7 +25,7 @@ def test_model():
     assert user.name == random_name
     
 def test_loader():
-    file_path = './tests/load.txt'
+    file_path = './tests/load.json'
     Loader.load(file_path=file_path)
     Loader.traverse_database()
 
