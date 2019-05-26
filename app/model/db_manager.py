@@ -33,7 +33,7 @@ class DBManager():
 
     @classmethod
     def detach_db(cls, db_name=None):
-        ''' Delete DB, only used in test env and sqlite databse '''
+        ''' Delete DB, only used in test env and sqlite database '''
         try:
             os.remove(os.path.join(os.getcwd(), '%s.sqlite' % db_name))
         except Exception as e:
