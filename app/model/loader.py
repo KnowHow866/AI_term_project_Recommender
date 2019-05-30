@@ -26,6 +26,8 @@ class LoaderDescriptor():
         if self.is_identical_data_in_db(target_dict=target_dict):
             return False
 
+        return True
+
     def is_identical_data_in_db(self, target_dict=None):
         copy_dict = dict((k.lower(), v) for k, v in target_dict.items())
         filters = [
@@ -39,8 +41,6 @@ class LoaderDescriptor():
             print('Class <%s> instance id %s have exist in DB'.ljust(120, '-') % (self.ORMClass.__name__, obj.id))
             return True
         else: return False
-
-        return True
 
 class Loader():
     '''
