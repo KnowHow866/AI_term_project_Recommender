@@ -13,6 +13,19 @@ class LoaderDescriptor():
         self.ORMClass = ORMClass
         self.loader_fields = kwargs.get('loader_fields', list())
 
+    def is_loadable_dict(self, target_dict=None):
+        '''
+        Check this dict can be loaded to database
+        A dict is loadable iff it has all loader_fields and not have identically existed in database
+        '''
+        copy_dict = dict((k.lower(), v) for k, v in target_dict.items())
+
+        for field_name in self.loader_fields:
+            if field_name.lower() not in copy_dict: return False
+        
+        if self.is_identical_data_in_db(target_dict=target_dict):
+            return False
+
     def is_identical_data_in_db(self, target_dict=None):
         copy_dict = dict((k.lower(), v) for k, v in target_dict.items())
         filters = [
@@ -26,19 +39,6 @@ class LoaderDescriptor():
             print('Class <%s> instance id %s have exist in DB'.ljust(120, '-') % (self.ORMClass.__name__, obj.id))
             return True
         else: return False
-
-    def is_loadable_dict(self, target_dict=None):
-        '''
-        Check this dict can be loaded to database
-        A dict is loadable iff it has all loader_fields and not have identically existed in database
-        '''
-        copy_dict = dict((k.lower(), v) for k, v in target_dict.items())
-
-        for field_name in self.loader_fields:
-            if field_name.lower() not in copy_dict: return False
-        
-        if self.is_identical_data_in_db(target_dict=target_dict):
-            return False
 
         return True
 

@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     DB_NAME = args.connection_db or DBManager.DEFAULT_DB_NAME
     print('\n Init database : %s.sqlite' % DB_NAME)
-    DBManager.init_db(
+    DBManager.init_db( 
         db_name=DB_NAME,
         is_echo=True if args.echo_database in (None, 'true', 'True') else False
     )
