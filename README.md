@@ -10,11 +10,20 @@ This system recommends meals that match user’s preference, reduce the time tha
 
 ## Catogory
 
+<a href='#Reminder'>Reminder</a>
+
 <a href='#model'>Model</a>
 
 <a href='#algorithm'>Algorithm</a>
 
 <a href='#recommender'>Recommender</a>
+
+---
+## <p id=reminder>Reminder</p>
+
+1. Json format data in '/data' directory will be auto load to db when run this project
+
+2. Database migration have not introduced
 
 ---
 ## <p id=model>Model</p>
