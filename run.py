@@ -3,7 +3,9 @@
 This is entry point of the recommender project.
 Provide interface of all functionality
 '''
-
+# native module
+import os
+# local module
 from app.model.db_manager import DBManager
 from app.model.loader import Loader
 
@@ -19,6 +21,7 @@ if __name__ == '__main__':
 
     parser.print_help()
 
+    # init DB
     DB_NAME = args.connection_db or DBManager.DEFAULT_DB_NAME
     print('\n Init database : %s.sqlite' % DB_NAME)
     DBManager.init_db( 
@@ -26,8 +29,15 @@ if __name__ == '__main__':
         is_echo=True if args.echo_database in (None, 'true', 'True') else False
     )
         
+    # auto load data in /data
+    auto_load_path = os.path.join(os.getcwd(), 'data')
+    for root, dirs, files in os.walk(auto_load_path):
+        for file_name in files:
+            Loader.load(file_path=os.path.join(auto_load_path, file_name))
+
+    # optional args
     if args.data_path is not None: 
         Loader.load(file_path=args.data_path)
         Loader.traverse_database()
 
-    if args.traverse_database in ('true', 'True'): Loader.traverse_database()
+    if args.traverse_database in ('true', 'True', 't', 'T'): Loader.traverse_database()

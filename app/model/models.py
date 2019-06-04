@@ -40,13 +40,24 @@ class LoaderMixin():
 class User(ModelManager.ModelBase, LoaderMixin):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
+    age = Column(Integer)
     name = Column(String)
+    height = Column(Integer) # cm
+    weight = Column(Integer) # kg
 
-    _loader_fields = ('name')
+    _loader_fields = ('age', 'name', 'height', 'weight')
 
     def __str__(self):
         return 'User %s (%s)' % (self.id, self.name)
 
+    @property
+    def bmi(self): 
+        return round(float( self.height / (self.height / 100)^2 ), 2)
+
+    @property
+    def basal_metabolic_rate(self):
+        return None
+    
 class Food(ModelManager.ModelBase, LoaderMixin):
     __tablename__ = 'food'
     id = Column(Integer, primary_key=True)
@@ -57,7 +68,7 @@ class Food(ModelManager.ModelBase, LoaderMixin):
     protein = Column(Float)
     fat = Column(Float)
     
-    _loader_fields = ('name', 'price', 'calories')
+    _loader_fields = ('name', 'calories')
 
     def __str__(self):
         return 'Food %s (%s, %s, %s)' % (self.id, self.name, self.price, self.calories)

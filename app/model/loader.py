@@ -92,7 +92,7 @@ class Loader():
                             
         except Exception as e:
             if isinstance(e, cls.RunTimeExceptions.LoadFileFailException): 
-                print('\nLoad file fail, please check file is in legal json format'.ljust(60, '-'))
+                print('\nLoad file fail (path : %s), please check file is in legal json format'.ljust(60, '-') % file_path)
             else:
                 traceback.print_exc()
 
