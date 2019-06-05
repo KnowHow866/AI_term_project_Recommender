@@ -52,7 +52,7 @@ class User(ModelManager.ModelBase, LoaderMixin):
 
     @property
     def bmi(self): 
-        return round(float( self.height / (self.height / 100)^2 ), 2)
+        return round(float( self.weight / (self.height / 100)^2 ), 2)
 
     @property
     def basal_metabolic_rate(self):
