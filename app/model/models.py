@@ -26,7 +26,7 @@ class ModelManager():
 
 class LoaderMixin():
     '''
-    This mixin provide ORM Model ability to bt load to database by loader
+    This mixin provide ORM Model ability to be loaded to database by loader
     But the inherit Class must define _loader_fields by itself
     '''
     _loader_fields = list()
