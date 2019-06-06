@@ -34,7 +34,11 @@ This system recommends meals that match user’s preference, reduce the time tha
 
 1. Add UserReview, FoodCategory
 
-2. Do we need to Model "User Preference" ?
+2. Do we need to Model "User Preference" ? -> Temporary Not
+
+3. Make provide 'id' in json file can be auto loaded, if no id is provided, auto generate id
+
+4. Please start to aad loading data to '/data' and write your algorithm
 
 ---
 ## <p id=model>Model</p>
