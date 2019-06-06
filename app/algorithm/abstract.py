@@ -19,5 +19,6 @@ class AlgorithmAbstraction(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def run(*arg, **kwargs) -> 'return python object':
+    def recommend(*arg, **kwargs) -> 'return python object':
+        ''' Everytime client ask for recommendation will invoke this method, return a python object '''
         raise NotImplemented
