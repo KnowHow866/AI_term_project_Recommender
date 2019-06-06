@@ -5,7 +5,7 @@ If it become too large later, we would split this file
 '''
 # local module
 from app.model.db_manager import DBManager
-from app.model.models import User, Food, ModelManager
+from app.model.models import ModelManager, User, Food, UserReview
 from app.model.loader import Loader
 # native
 import random, string
@@ -23,6 +23,25 @@ def test_model():
     user = session.query(User).filter(User.name==random_name).first()
 
     assert user.name == random_name
+
+def test_many_to_many_relationship():
+    session = DBManager.get_session()
+    user = User(name='Kevein')
+    food = Food(name='Noodle')
+    session.add(user)
+    session.add(food)
+    session.commit()
+
+    review = UserReview(
+        user=user,
+        food=food,
+        is_accept=False
+    )
+    session.add(review)
+    
+    assert review.user is user
+    assert review.food is food
+    assert review.is_accept is False
     
 def test_loader():
     file_path = './tests/load.json'

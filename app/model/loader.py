@@ -87,7 +87,10 @@ class Loader():
 
                     for data in data_list:
                         if loader_descriptor.is_loadable_dict(target_dict=data):
-                            session.add(ORMClass(**data))
+                            try:
+                                session.add(ORMClass(**data))
+                            except Exception as e:
+                                print('Load data file (%s)' % ORMClass.__name__)
                     session.commit()
                             
         except Exception as e:

@@ -3,7 +3,8 @@
 import hashlib
 import sys, inspect, abc, random
 # orm
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 class ModelManager():
@@ -45,10 +46,12 @@ class User(ModelManager.ModelBase, LoaderMixin):
     height = Column(Integer) # cm
     weight = Column(Integer) # kg
 
+    foods = relationship('UserReview', back_populates='user')
+
     _loader_fields = ('age', 'name', 'height', 'weight')
 
     def __str__(self):
-        return 'User %s (%s)' % (self.id, self.name)
+        return '[User, %s] (%s)' % (self.id, self.name)
 
     @property
     def bmi(self): 
@@ -67,8 +70,22 @@ class Food(ModelManager.ModelBase, LoaderMixin):
     carbohydrate = Column(Float)
     protein = Column(Float)
     fat = Column(Float)
+
+    users = relationship('UserReview', back_populates='food')
     
     _loader_fields = ('name', 'calories')
 
     def __str__(self):
-        return 'Food %s (%s, %s, %s)' % (self.id, self.name, self.price, self.calories)
+        return '[Food, %s] (%s, %s, %s)' % (self.id, self.name, self.price, self.calories)
+
+class UserReview(ModelManager.ModelBase, LoaderMixin):
+    __tablename__ = 'user_review'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'), back_populates='users')
+    food_id = Column(Integer, ForeignKey('food.id'), back_populates='foods')
+    user = relationship('User', back_populates='foods')
+    food = relationship('Food', back_populates='users')
+    is_accept = Column(Boolean, default=False)
+    
+    def __str__(self):
+        return '[UserReview, %s] Accept: %s (%s comment to %s)' % (self.id, self.is_accept, self.user.name, self.food.name)

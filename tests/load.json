@@ -1,5 +1,13 @@
-{
-    "name": "香瓜",
-    "price": "100",
-    "calories": "100"
-}
+[
+    {
+        "name": "水蜜桃",
+        "price": 360,
+        "calories": 70
+    },
+    {
+        "id": 66,
+        "name": "香瓜",
+        "price": 100,
+        "calories": 100
+    }
+]
