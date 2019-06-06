@@ -12,6 +12,8 @@ This system recommends meals that match user’s preference, reduce the time tha
 
 <a href='#Reminder'>Reminder</a>
 
+<a href='#meeting_minutes'>MeetingMinutes</a>
+
 <a href='#model'>Model</a>
 
 <a href='#algorithm'>Algorithm</a>
@@ -24,6 +26,15 @@ This system recommends meals that match user’s preference, reduce the time tha
 1. Json format data in '/data' directory will be auto load to db when run this project
 
 2. Database migration have not introduced
+
+---
+## <p id=meeting_minutes>MeetingMinutes</p>
+
+### 5/6
+
+1. Add UserReview, FoodCategory
+
+2. Do we need to Model "User Preference" ?
 
 ---
 ## <p id=model>Model</p>
