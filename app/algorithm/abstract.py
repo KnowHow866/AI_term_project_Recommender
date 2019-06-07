@@ -14,11 +14,11 @@ class AlgorithmAbstraction(abc.ABC):
     '''
 
     @abc.abstractclassmethod
-    def init_instance(*arg, **kwargs) -> 'default to void':
+    def init_instance(self, *arg, **kwargs) -> 'default to void':
         ''' every time algorithm instance is created will call this to init '''
         pass
 
     @abc.abstractmethod
-    def recommend(*arg, **kwargs) -> 'Food[] , high recommendation prority in lower index ':
+    def recommend(self, *arg, **kwargs) -> 'Food[] , high recommendation prority in lower index ':
         ''' Everytime client ask for recommendation will invoke this method, return a python object '''
         raise NotImplementedError
