@@ -10,4 +10,3 @@ class CommandLineMainProxy(Main):
         while True:
             command = input('> ')
         
-
