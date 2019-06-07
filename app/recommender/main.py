@@ -16,7 +16,7 @@ class Main():
     def __init__(self, db_name='db', *args, **kwrags):
         if db_name is None or not isinstance(db_name, str): raise Exception('please provide DB name to init service')
         self.db_name = db_name
-        DBManager.init_db(db_name=db_name)
+        DBManager.init_db(db_name=db_name, is_echo=kwrags.get('db_is_echo', True))
         self.session = DBManager.get_session()
 
     def __enter__(self):
@@ -37,8 +37,13 @@ class Main():
     def logout(self):
         self._user_id = None
 
-    def get_foods(self, max_length=-1):
+    def get_foods(self, max_length=None) -> 'Food[]':
         return self.session.query(Food).order_by(Food.id.desc())[:max_length]
+
+    def search_foods(self, search : 'str', max_length=None) -> 'Food[]':
+        return self.session.query(Food).filter(
+                Food.name.like(f'%{search}%')
+            ).order_by(Food.id.desc())[:max_length]
 
     def recommend(self, max_length=10):
         return [random.choice(list(self.session.query(Food))) for _ in range(max_length)]

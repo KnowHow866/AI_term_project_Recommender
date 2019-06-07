@@ -5,7 +5,7 @@ from app.model.models import User, Food, FoodPurchaseRecord, UserRecommendationR
 
 
 def test_main():
-    with Main(db_name='test') as service:
+    with Main(db_name='test', db_is_echo=False) as service:
         # pre-prepared data
         Food(name='Apple').save()
         USER_NAME = 'serviceUser'
@@ -23,6 +23,10 @@ def test_main():
         service.take_food(food=food_for_test)
         assert type(service.get_review_record()[0]) is UserRecommendationReview
         assert type(service.get_purchased_record()[0]) is FoodPurchaseRecord
+        
+        search_foods = service.search_foods(search='a')
+        assert type(search_foods) is list
+        assert type(search_foods[0]) is Food
 
         # logout
         service.logout()
