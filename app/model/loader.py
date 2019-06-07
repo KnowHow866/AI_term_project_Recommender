@@ -90,7 +90,7 @@ class Loader():
                             try:
                                 session.add(ORMClass(**data))
                             except Exception as e:
-                                print('Load data file (%s), reason: %s' % (ORMClass.__name__, e.__str__()))
+                                print('Load data fail (%s), reason: %s' % (ORMClass.__name__, e.__str__()))
                     session.commit()
                             
         except Exception as e:
