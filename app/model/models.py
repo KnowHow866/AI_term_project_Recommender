@@ -1,11 +1,13 @@
 
 # native module
 import hashlib
-import sys, inspect, abc, random
+import sys, inspect, abc, random, datetime
 # orm
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+# local module
+from . import db_manager
 
 class ModelManager():
     '''
@@ -38,7 +40,20 @@ class LoaderMixin():
             loader_fields=cls._loader_fields
         )
 
-class User(ModelManager.ModelBase, LoaderMixin):
+class UtilMixin():
+    ''' mixin that provide convience utilities for ORM Model '''
+    def save(self):
+        session = db_manager.DBManager.get_session()
+        session.add(self)
+        session.commit()
+
+        ModelClass = type(self)
+        if self.id is None:
+            return session.query(ModelClass).order_by(ModelClass.id.desc()).first()
+        else:
+            return session.query(ModelClass).filter(ModelClass.id==self.id).first()
+
+class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     age = Column(Integer)
@@ -46,7 +61,8 @@ class User(ModelManager.ModelBase, LoaderMixin):
     height = Column(Integer) # cm
     weight = Column(Integer) # kg
 
-    foods = relationship('UserReview', back_populates='user')
+    reviewed_foods = relationship('UserRecommendationReview', back_populates='user')
+    purchased_foods_record = relationship('FoodPurchaseRecord', back_populates='user')
 
     _loader_fields = ('age', 'name', 'height', 'weight')
 
@@ -61,7 +77,7 @@ class User(ModelManager.ModelBase, LoaderMixin):
     def basal_metabolic_rate(self):
         return None
     
-class Food(ModelManager.ModelBase, LoaderMixin):
+class Food(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     __tablename__ = 'food'
     id = Column(Integer, primary_key=True)
     name = Column(String)
@@ -71,21 +87,40 @@ class Food(ModelManager.ModelBase, LoaderMixin):
     protein = Column(Float)
     fat = Column(Float)
 
-    users = relationship('UserReview', back_populates='food')
+    reviewed_users = relationship('UserRecommendationReview', back_populates='food')
+    purchased_users_record = relationship('FoodPurchaseRecord', back_populates='food')
     
     _loader_fields = ('name', 'calories')
 
     def __str__(self):
         return '[Food, %s] (%s, %s, %s)' % (self.id, self.name, self.price, self.calories)
 
-class UserReview(ModelManager.ModelBase, LoaderMixin):
+class UserRecommendationReview(ModelManager.ModelBase, LoaderMixin, UtilMixin):
+    ''' User's review of recommendation '''
     __tablename__ = 'user_review'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'), back_populates='users')
     food_id = Column(Integer, ForeignKey('food.id'), back_populates='foods')
-    user = relationship('User', back_populates='foods')
-    food = relationship('Food', back_populates='users')
+    user = relationship('User', back_populates='reviewed_foods')
+    food = relationship('Food', back_populates='reviewed_users')
+
     is_accept = Column(Boolean, default=False)
+    created_datetime = Column(DateTime, default=datetime.datetime.utcnow)
     
     def __str__(self):
         return '[UserReview, %s] Accept: %s (%s comment to %s)' % (self.id, self.is_accept, self.user.name, self.food.name)
+
+    _loader_fields = ('user_id', 'food_id', 'is_accept')
+
+class FoodPurchaseRecord(ModelManager.ModelBase, UtilMixin):
+    __tablename__ = 'food_purchase_record'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'), back_populates='users')
+    food_id = Column(Integer, ForeignKey('food.id'), back_populates='foods')
+    user = relationship('User', back_populates='purchased_foods_record')
+    food = relationship('Food', back_populates='purchased_users_record')
+
+    created_datetime = Column(DateTime, default=datetime.datetime.utcnow)
+    
+    def __str__(self):
+        return '[FoodPurchaseRecord, %s] \t%s \t%s \t%s' % (self.id, self.user.name, self.food.name, self.created_datetime)
