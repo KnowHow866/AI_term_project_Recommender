@@ -21,4 +21,4 @@ class AlgorithmAbstraction(abc.ABC):
     @abc.abstractmethod
     def recommend(*arg, **kwargs) -> 'Food[] , high recommendation prority in lower index ':
         ''' Everytime client ask for recommendation will invoke this method, return a python object '''
-        raise NotImplemented
+        raise NotImplementedError
