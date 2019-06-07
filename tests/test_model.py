@@ -57,4 +57,4 @@ def test_loader():
     Loader.traverse_database()
 
 def test_detach_db():
-    DBManager.detach_db(db_name='test')
+    DBManager.detach_db()

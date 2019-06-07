@@ -42,7 +42,9 @@ class LoaderMixin():
 
 class UtilMixin():
     ''' mixin that provide convience utilities for ORM Model '''
-    def save(self):
+
+    def save(self) -> 'instance':
+        ''' save to db and return saved instance '''
         session = db_manager.DBManager.get_session()
         session.add(self)
         session.commit()

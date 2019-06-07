@@ -10,10 +10,20 @@ class Main():
     Manage all resource
     '''
     session = None
+    db_name = None
     _user_id = None
 
-    def __init__(self, *args, **kwrags):
+    def __init__(self, db_name='db', *args, **kwrags):
+        if db_name is None or not isinstance(db_name, str): raise Exception('please provide DB name to init service')
+        self.db_name = db_name
+        DBManager.init_db(db_name=db_name)
         self.session = DBManager.get_session()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self,  exc_type, exc_val, exc_tb):
+        DBManager.detach_db()
 
     @property
     def user(self):
@@ -54,5 +64,3 @@ class Main():
 
     def get_review_record(self):
         return (self.user).reviewed_foods
-
-    
