@@ -59,7 +59,7 @@ class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     age = Column(Integer)
-    name = Column(String)
+    name = Column(String, unique=True)
     height = Column(Integer) # cm
     weight = Column(Integer) # kg
 

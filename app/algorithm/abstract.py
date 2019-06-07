@@ -22,3 +22,13 @@ class AlgorithmAbstraction(abc.ABC):
     def recommend(self, *args, **kwargs) -> 'Food[] , high recommendation prority in lower index ':
         ''' Everytime client ask for recommendation will invoke this method, return a python object '''
         raise NotImplementedError
+
+    @abc.abstractmethod
+    def user_take_food_hook(self, purchase_record : 'FoodPurchaseRecord', recommendation_review : 'UserRecommendationReview') -> 'void':
+        '''
+        This hook will be invoked when user take a food
+        FoodPurchaseRecord & UserRecommendationReview will be pass in
+        inform Algorithm user take thier recommendation or not
+        '''
+        pass
+        
