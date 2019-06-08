@@ -12,6 +12,15 @@ class LoaderDescriptor():
     def __init__(self, ORMClass=None, *args, **kwargs):
         self.ORMClass = ORMClass
         self.loader_fields = kwargs.get('loader_fields', list())
+        self.not_loaded_fields = kwargs.get('not_loaded_fields', list())
+
+    def get_loadable_dict(self, target_dict=None) -> 'dict(can be use to init ORMMOdel instance) or None':
+        if self.is_loadable_dict(target_dict) is True:
+            for k in self.not_loaded_fields:
+                target_dict.pop(k, None)
+            return target_dict
+        else:
+            return None
 
     def is_loadable_dict(self, target_dict=None):
         '''
@@ -86,13 +95,15 @@ class Loader():
                     if loader_descriptor is None: continue
 
                     for data in data_list:
-                        if loader_descriptor.is_loadable_dict(target_dict=data):
+                        loadable_dict = loader_descriptor.get_loadable_dict(target_dict=data)
+                        if loadable_dict is not None:
                             try:
-                                session.add(ORMClass(**data))
+                                session.add(ORMClass(**loadable_dict))
+                                session.commit()
                             except Exception as e:
                                 print('Load data fail (%s), reason: %s' % (ORMClass.__name__, e.__str__()))
-                    session.commit()
-                            
+                                session.rollback()
+
         except Exception as e:
             if isinstance(e, cls.RunTimeExceptions.LoadFileFailException): 
                 print('\nLoad file fail (path : %s), please check file is in legal json format'.ljust(60, '-') % file_path)
@@ -106,5 +117,5 @@ class Loader():
         classes = ModelManager.get_orm_model_classes()
         for ORMClass in classes:
             print('\n Model: %s'.ljust(120, '-') % ORMClass.__name__)
-            data = session.query(ORMClass)
+            data = session.query(ORMClass).all()
             for element in data: print(element)

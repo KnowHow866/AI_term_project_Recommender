@@ -33,11 +33,13 @@ class LoaderMixin():
     But the inherit Class must define _loader_fields by itself
     '''
     _loader_fields = list()
+    _not_loaded_fields = list()
 
     @classmethod
     def get_loader_fields(cls) -> 'dict':
         return dict(
-            loader_fields=cls._loader_fields
+            loader_fields=cls._loader_fields,
+            not_loaded_fields=cls._not_loaded_fields
         )
 
 class UtilMixin():
@@ -62,6 +64,8 @@ class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     name = Column(String, unique=True)
     height = Column(Integer) # cm
     weight = Column(Integer) # kg
+    body_fat = Column(Integer) # percent
+    gender_is_male = Column(Boolean)
 
     reviewed_foods = relationship('UserRecommendationReview', back_populates='user')
     purchased_foods_record = relationship('FoodPurchaseRecord', back_populates='user')
@@ -72,8 +76,13 @@ class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
         return '[User, %s] (%s)' % (self.id, self.name)
 
     @property
+    def gender(self) -> 'male / female':
+        if self.gender_is_male is True: return 'male'
+        else: return 'female'
+
+    @property
     def bmi(self): 
-        return round(float( self.weight / (self.height / 100)^2 ), 2)
+        return round(float( self.weight / (self.height / 100)**2 ), 2)
 
     @property
     def basal_metabolic_rate(self):
@@ -117,9 +126,10 @@ class UserRecommendationReview(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     created_datetime = Column(DateTime, default=datetime.datetime.utcnow)
     
     def __str__(self):
-        return '[UserReview, %s] Accept: %s (%s comment to %s)' % (self.id, self.is_accept, self.user.name, self.food.name)
+        return '[UserReview, %s] Accept: %s (%s comment to %s)' % (self.id, self.is_accept, self.user, self.food)
 
     _loader_fields = ('user_id', 'food_id', 'is_accept')
+    _not_loaded_fields = ('created_datetime',)
 
 class FoodPurchaseRecord(ModelManager.ModelBase, UtilMixin):
     __tablename__ = 'food_purchase_record'
@@ -132,4 +142,4 @@ class FoodPurchaseRecord(ModelManager.ModelBase, UtilMixin):
     created_datetime = Column(DateTime, default=datetime.datetime.utcnow)
     
     def __str__(self):
-        return '[FoodPurchaseRecord, %s] \t%s \t%s \t%s' % (self.id, self.user.name, self.food.name, self.created_datetime)
+        return '[FoodPurchaseRecord, %s] \t%s \t%s \t%s' % (self.id, self.user, self.food, self.created_datetime)

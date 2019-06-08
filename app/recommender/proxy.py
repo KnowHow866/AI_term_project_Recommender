@@ -10,7 +10,7 @@ class Command():
     patterns = list()
     func = None
 
-    def __init__(self, name=None, patterns=list(), invoke_function=lambda _ : True):
+    def __init__(self, name=None, patterns=list(), invoke_function=lambda : True):
         self.name = name
         self.patterns = patterns
         self.func = invoke_function

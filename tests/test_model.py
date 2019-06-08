@@ -14,8 +14,6 @@ def test_init_project():
     DBManager.init_db(db_name='test', is_echo=False)
 
 def test_model():
-    session = DBManager.get_session()
-
     random_name = ''.join([random.choice(string.ascii_letters + string.digits) for _ in range(6)])
     user = User(name=random_name)
 
