@@ -11,7 +11,7 @@ from . import db_manager
 
 class ModelManager():
     '''
-    A singleton used to auto mange models in app
+    A singleton used to auto manage models in app
     '''
     ModelBase = declarative_base()
 
@@ -96,6 +96,14 @@ class Food(ModelManager.ModelBase, LoaderMixin, UtilMixin):
 
     def __str__(self):
         return '[Food, %s] (%s, %s, %s)' % (self.id, self.name, self.price, self.calories)
+
+    def show_detail(self):
+        print()
+        print(' Food: %s (id: %s), price: %s '.ljust(5, '-').rjust(5, '-') % (self.name, self.id, self.price))
+        print(' nutrition info'.ljust(5, '-'))
+        nutritions = ['calories', 'carbohydrate', 'protein', 'fat']
+        for n in nutritions:
+            print('<%s> : %s' % (n, getattr(self, n)))
 
 class UserRecommendationReview(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     ''' User's review of recommendation '''

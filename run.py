@@ -8,6 +8,7 @@ import os
 # local module
 from app.model.db_manager import DBManager
 from app.model.loader import Loader
+from app.recommender.proxy import CommandLineMainProxy
 
 from argparse import ArgumentParser
 parser = ArgumentParser(description=__doc__)
@@ -23,10 +24,11 @@ if __name__ == '__main__':
 
     # init DB
     DB_NAME = args.connection_db or DBManager.DEFAULT_DB_NAME
+    DB_IS_ECHO = True if args.echo_database in (None, 'true', 'True') else False
     print('\n Init database : %s.sqlite' % DB_NAME)
     DBManager.init_db( 
         db_name=DB_NAME,
-        is_echo=True if args.echo_database in (None, 'true', 'True') else False
+        is_echo=DB_IS_ECHO
     )
         
     # auto load data in /data
@@ -41,3 +43,6 @@ if __name__ == '__main__':
         Loader.traverse_database()
 
     if args.traverse_database in ('true', 'True', 't', 'T'): Loader.traverse_database()
+
+    recommander = CommandLineMainProxy(db_is_echo=DB_IS_ECHO)
+    recommander.run()

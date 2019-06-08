@@ -46,6 +46,7 @@ class Main():
             ).order_by(Food.id.desc())[:max_length]
 
     def recommend(self, max_length=10):
+        if len(list(self.session.query(Food))) == 0: return []
         return [random.choice(list(self.session.query(Food))) for _ in range(max_length)]
 
     def reply_recommendation(self, food=None, is_accept=True):

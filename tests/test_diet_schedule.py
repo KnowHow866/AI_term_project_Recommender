@@ -16,3 +16,4 @@ def test_simple_diet():
     assert isinstance(diet.carbohydrate , int)
     assert isinstance(diet.protein , int)
     assert isinstance(diet.fat , int)
+    
