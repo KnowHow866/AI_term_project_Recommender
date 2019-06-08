@@ -57,6 +57,7 @@ class Cmd():
     @classmethod
     def title(cls, text=''):
         print(f'{text}'.rjust(30, '-').ljust(30, '-'))
+        print()
 
 class CommandLineMainProxy(Main):
     '''
@@ -68,10 +69,11 @@ class CommandLineMainProxy(Main):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         commands = [
-            Command(name='view_recommendation', patterns=['r', 'rec', 'recommend', 'recommendation'], invoke_function=self._view_recommandation),
-            Command(name='view_foods', patterns=['v', 'view_foods'], invoke_function=lambda : Cmd.get_input('view_foods !!!')),
-            Command(name='edit_user_data', patterns=['e', 'edit_data'], invoke_function=lambda : Cmd.get_input('edit_user_data !!!')),
+            Command(name='view_recommendation', patterns=['r'], invoke_function=self._view_recommandation),
+            Command(name='view_foods', patterns=['v'], invoke_function=lambda : Cmd.get_input('view_foods !!!')),
+            Command(name='edit_user_data', patterns=['e'], invoke_function=lambda : Cmd.get_input('edit_user_data !!!')),
             Command(name='purchase_food', patterns=['p'], invoke_function=lambda : Cmd.get_input('purchase_food !!!')),
+            Command(name='exit', patterns=['q'], invoke_function=self._exit_app),
         ]
         self.command_composite = CommandComposite(commands=commands)
 
@@ -97,20 +99,23 @@ class CommandLineMainProxy(Main):
                 self.login(user)
                 break
 
+    def _exit_app(self):
+        sys.exit()
+
     def _show_main_page(self):
-        help_text_collection = [
-            '\n',
-            Cmd.title(' Welcome to AI Eat ! '),
-            '\n'
-        ]
         Cmd.clear()
-        for s in help_text_collection: print(s)
+        Cmd.title(' Welcome to AI Eat ! ')
         for command in self.command_composite.commands:
             print('press \t%s to \t%s' % (command.patterns[0], command.name))
     
     def _view_recommandation(self):
-        recommended_foods = self.recommend()[:10]
+        recommended_foods = self.recommend()[:3]
         Cmd.title('RECOMMENDATIONS')
         for food in recommended_foods:
             food.show_detail()
         Cmd.get_input('press <enter> to leave')
+
+    def _view_foods(self):
+        # choice order key
+        # pagination
+        pass

@@ -100,7 +100,6 @@ class Food(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     def show_detail(self):
         print()
         print(' Food: %s (id: %s), price: %s '.ljust(5, '-').rjust(5, '-') % (self.name, self.id, self.price))
-        print(' nutrition info'.ljust(5, '-'))
         nutritions = ['calories', 'carbohydrate', 'protein', 'fat']
         for n in nutritions:
             print('<%s> : %s' % (n, getattr(self, n)))
