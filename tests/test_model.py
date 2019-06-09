@@ -8,7 +8,7 @@ from app.model.db_manager import DBManager
 from app.model.models import ModelManager, User, Food, UserRecommendationReview, FoodPurchaseRecord
 from app.model.loader import Loader
 # native
-import random, string
+import random, string, os
 
 def test_init_project():
     DBManager.init_db(db_name='test', is_echo=False)
@@ -50,7 +50,7 @@ def test_many_to_many_relationship():
     assert review.is_accept is False
     
 def test_loader():
-    file_path = './tests/load.json'
+    file_path = os.path.join('tests', 'load.json')
     Loader.load(file_path=file_path)
     Loader.traverse_database()
 
