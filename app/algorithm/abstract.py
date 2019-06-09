@@ -13,7 +13,6 @@ class AlgorithmAbstraction(abc.ABC):
     add ant function here if you want to expose it
     '''
 
-    @abc.abstractclassmethod
     def init_instance(self, *args, **kwargs) -> 'default to void':
         ''' every time algorithm instance is created will call this to init '''
         pass
@@ -23,7 +22,6 @@ class AlgorithmAbstraction(abc.ABC):
         ''' Everytime client ask for recommendation will invoke this method, return a python object '''
         raise NotImplementedError
 
-    @abc.abstractmethod
     def user_take_food_hook(self, purchase_record : 'FoodPurchaseRecord', recommendation_review : 'UserRecommendationReview') -> 'void':
         '''
         This hook will be invoked when user take a food

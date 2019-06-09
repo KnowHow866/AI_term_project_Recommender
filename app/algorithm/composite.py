@@ -18,7 +18,9 @@ class FairAlgorithmComposite(AlgorithmAbstraction):
 
     def __init__(self, algorithms=list(), *args, **kwargs):
         if len(algorithms) == 0:
-            self.algorithms.append(RandomAlgorithm)
+            self.algorithms = [
+                RandomAlgorithm(),
+            ]
         else:
             self.algorithms = algorithms
 
