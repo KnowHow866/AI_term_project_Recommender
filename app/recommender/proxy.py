@@ -1,4 +1,4 @@
-from .main import Main
+from .main import Application
 from app.model.db_manager import DBManager
 from app.model.models import User
 # native module
@@ -59,7 +59,7 @@ class Cmd():
         print(f'{text}'.rjust(30, '-').ljust(30, '-'))
         print()
 
-class CommandLineMainProxy(Main):
+class CommandLineApplicationProxy(Application):
     '''
     This is a proxy of Main Class
     To make it can be access and manipuated from command line

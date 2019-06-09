@@ -8,7 +8,7 @@ import os
 # local module
 from app.model.db_manager import DBManager
 from app.model.loader import Loader
-from app.recommender.proxy import CommandLineMainProxy
+from app.recommender.proxy import CommandLineApplicationProxy
 
 from argparse import ArgumentParser
 parser = ArgumentParser(description=__doc__)
@@ -47,5 +47,5 @@ if __name__ == '__main__':
     if args.traverse_database in ('true', 'True', 't', 'T'): Loader.traverse_database()
 
     # run command line UI
-    recommander = CommandLineMainProxy(db_is_echo=DB_IS_ECHO)
-    recommander.run()
+    app = CommandLineApplicationProxy(db_is_echo=DB_IS_ECHO)
+    app.run()

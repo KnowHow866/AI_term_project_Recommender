@@ -34,21 +34,25 @@ class DietScheduleAbstract(abc.ABC):
         ''' recommend fat take in daily '''
         raise NotImplementedError
 
-class SimpleDiet(DietScheduleAbstract):
-    ''' Simple diet pattern '''
+class SimpleCaloriesControlDiet(DietScheduleAbstract):
+    nutirtion_ratio = dict(
+        carbohydrate=0.4,
+        protein=0.4,
+        fat=0.2
+    )
 
     @property
     def calories(self):
-        return 1800
+        return int(self.user.basal_metabolic_rate * 1.2)
 
     @property
     def carbohydrate(self): 
-        return 200
+        return (self.calories * self.nutirtion_ratio['carbohydrate']) / 4 
 
     @property
     def protein(self):
-        return 60
+        return (self.calories * self.nutirtion_ratio['protein']) / 4 
 
     @property
     def fat(self):
-        return 10
+        return (self.calories * self.nutirtion_ratio['fat']) / 9

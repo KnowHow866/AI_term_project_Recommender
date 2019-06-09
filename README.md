@@ -40,6 +40,21 @@ This system recommends meals that match user’s preference, reduce the time tha
 
 4. Please start to aad loading data to '/data' and write your algorithm
 
+### 5/9
+
+1. Write runable algorithm
+
+2. Give some diet schedule
+
+3. Write evaluation proxy
+
+4. Make poster
+
+5. reference
+
+> Nutrition ratio of Simple Diet Schedule reference from America Council fo Health
+> https://www.acefitness.org/education-and-resources/professional/expert-articles/5904/how-to-determine-macronutrient-needs-based-on-goals
+
 ---
 ## <p id=model>Model</p>
 

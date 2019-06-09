@@ -65,7 +65,7 @@ class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     height = Column(Integer) # cm
     weight = Column(Integer) # kg
     body_fat = Column(Integer) # percent
-    gender_is_male = Column(Boolean)
+    gender_is_male = Column(Boolean, default=True)
 
     reviewed_foods = relationship('UserRecommendationReview', back_populates='user')
     purchased_foods_record = relationship('FoodPurchaseRecord', back_populates='user')
@@ -86,7 +86,14 @@ class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
 
     @property
     def basal_metabolic_rate(self):
-        return None
+        if self.gender_is_male:
+            return int(
+                (10 * self.weight) + (6.25 * self.height) - (5 * self.age) + 5
+            )
+        else:
+            return int(
+                (10 * self.weight) + (6.25 * self.height) - (5 * self.age) - 162
+            )
     
 class Food(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     __tablename__ = 'food'

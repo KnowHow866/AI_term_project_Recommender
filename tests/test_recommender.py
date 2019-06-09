@@ -1,11 +1,11 @@
 
-from app.recommender.main import Main
+from app.recommender.main import Application
 from app.model.db_manager import DBManager
 from app.model.models import User, Food, FoodPurchaseRecord, UserRecommendationReview
 
 
-def test_main():
-    with Main(db_name='test', db_is_echo=False) as service:
+def test_application():
+    with Application(db_name='test', db_is_echo=False) as service:
         # pre-prepared data
         Food(name='Apple').save()
         USER_NAME = 'serviceUser'

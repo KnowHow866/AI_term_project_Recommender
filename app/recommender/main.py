@@ -4,9 +4,9 @@ from app.model.models import ModelManager, User, Food, UserRecommendationReview,
 # native module
 import random
 
-class Main():
+class Application():
     '''
-    Instance of App Service
+    Instance of App Service, it's so called ** Application **
     Manage all resource
     '''
     session = None
