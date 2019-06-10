@@ -20,7 +20,7 @@ def recommend_food(prediction_df, user_id, food, review, num_recommendations = 1
     recommend_list = pd.merge(food_not_yet_recommended, user_preference, on = "food_id").sort_values(by = ["ratings"], ascending = False).iloc[:num_recommendations]["food_id"].to_list()
 
     if len(recommend_list) < 10:
-        recommned_list.extend(user_preference.iloc[:(10-len(recommend_list))]["food_id"].to_list())
+        recommend_list.extend(user_preference.iloc[:(10-len(recommend_list))]["food_id"].to_list())
 
     return recommend_list
 
