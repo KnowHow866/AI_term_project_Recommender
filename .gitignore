@@ -6,3 +6,4 @@ env
 .pytest_cache
 *.sqlite
 .DS_Store
+test_algorithm.py
