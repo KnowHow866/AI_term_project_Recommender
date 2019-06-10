@@ -17,7 +17,7 @@ class UserProxyAbstract(abc.ABC):
         self.application = application
 
     def set_application(self, application=None):
-        ''' Application is instance of app.recommender.main.Application '''
+        ''' Application is instance of app.recommender.application.Application '''
         self.application = application
 
     @abc.abstractmethod
@@ -25,9 +25,9 @@ class UserProxyAbstract(abc.ABC):
         ''' return (True, 0.7) '''
         raise NotImplementedError
 
-    @abc.abstractmethod
     def accpet_ratio(self) -> 'float [0-1]':
-        raise NotImplementedError
+        accpet_ratio = float(self.application.acception_count / self.application.recommendation_count)
+        return round(accpet_ratio ,2)
         
     def get_avaiable_foods(self) -> 'Food[]':
         '''
@@ -45,25 +45,31 @@ class UserProxyAbstract(abc.ABC):
         first consider recommded foods
         if none can statisfied proxyUser, then see avaiable foods
         '''
-        def try_choice_food(food_list=list(), force=False) -> 'boolean (is sucessfully choice food)':
-            for food in food_list:
-                is_accept, satisfication_ratio = self.utility(food=food)
-                if is_accept:
-                    self.application.take_food(food=food)
-                    return True
-            # no food be choiced, if force is True, take the food with hightest satisfication_ratio
-            if force: 
-                values = list(map(lambda f: self.application.take_food(food=f)[1], food_list))
-                idx = values.index(max(values))
-                self.application.take_food(food=food_list[idx])
-                return True
-            else:
-                return False
-
+        # first consider recommended food
         recommended_foods = self.application.recommend()
-        if try_choice_food(food_list=recommended_foods): return 
+        food_in_recommendation = self._try_choice_food(food_list=recommended_foods)
+        if food_in_recommendation is not None:
+            self.application.reply_recommendation(food=food_in_recommendation, is_accept=True)
+            return 
 
+        # second consider available food
         avaiable_foods = self.get_avaiable_foods()
-        if try_choice_food(food_list=avaiable_foods, force=True): return
+        if self._try_choice_food(food_list=avaiable_foods, force=True) is not None: 
+            return
 
         raise Exception('No food be take from proxy')
+
+    def _try_choice_food(self, food_list=list(), force=False) -> 'Food (is sucessfully choice food) or None':
+        for food in food_list:
+            is_accept, satisfication_ratio = self.utility(food=food)
+            if is_accept:
+                self.application.take_food(food=food)
+                return food
+        # no food be choiced, if force is True, take the food with hightest satisfication_ratio
+        if force: 
+            values = list(map(lambda f: self.application.take_food(food=f)[1], food_list))
+            idx = values.index(max(values))
+            self.application.take_food(food=food_list[idx])
+            return food_list[idx]
+        else:
+            return None

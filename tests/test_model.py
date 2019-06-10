@@ -11,7 +11,8 @@ from app.model.loader import Loader
 import random, string, os
 
 def test_init_project():
-    DBManager.init_db(db_name='test', is_echo=False)
+    random_db_name_seed = ''.join([random.choice(string.ascii_lowercase) for _ in range(10)])
+    DBManager.init_db(db_name='test_%s' % random_db_name_seed, is_echo=False)
 
 def test_model():
     random_name = ''.join([random.choice(string.ascii_letters + string.digits) for _ in range(6)])

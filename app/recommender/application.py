@@ -13,6 +13,9 @@ class Application():
     db_name = None
     _user_id = None
     algorithm = None
+    
+    recommendation_count = 0
+    acception_count = 0
 
     def __init__(self, db_name='db', *args, **kwrags):
         if db_name is None or not isinstance(db_name, str): raise Exception('please provide DB name to init service')
@@ -50,10 +53,17 @@ class Application():
             ).order_by(Food.id.desc())[:max_length]
 
     def recommend(self, max_length=10):
-        if len(list(self.session.query(Food))) == 0: return []
-        return [random.choice(list(self.session.query(Food))) for _ in range(max_length)]
+        self.recommendation_count += 1
+        if self.algorithm is None:
+            if len(list(self.session.query(Food))) == 0: return []
+            return [random.choice(list(self.session.query(Food))) for _ in range(max_length)]
+        else:
+            return self.algorithm.recommend(max_length=max_length)
 
     def reply_recommendation(self, food=None, is_accept=True):
+        ''' User feedback to recommendation '''
+        if is_accept is True: self.acception_count += 1
+
         review = UserRecommendationReview(
             user=self.user,
             food=food,

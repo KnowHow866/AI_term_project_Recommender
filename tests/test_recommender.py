@@ -1,5 +1,5 @@
 
-from app.recommender.main import Application
+from app.recommender.application import Application
 from app.model.db_manager import DBManager
 from app.model.models import User, Food, FoodPurchaseRecord, UserRecommendationReview
 
