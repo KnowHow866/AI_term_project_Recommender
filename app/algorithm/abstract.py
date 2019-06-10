@@ -10,7 +10,7 @@ import abc
 class AlgorithmAbstraction(abc.ABC):
     '''
     Interface component beyond this module use to interact with algorithm
-    add ant function here if you want to expose it
+    add any function here if you want to expose it
     '''
 
     def init_instance(self, *args, **kwargs) -> 'default to void':
@@ -29,4 +29,3 @@ class AlgorithmAbstraction(abc.ABC):
         inform Algorithm user take thier recommendation or not
         '''
         pass
-        
