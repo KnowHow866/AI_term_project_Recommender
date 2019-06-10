@@ -59,4 +59,4 @@ class SimpleCaloriesControlDiet(DietScheduleAbstract):
 
 class DietScheduleCollection():
     defautl_schedule = SimpleCaloriesControlDiet
-    schedules = (SimpleCaloriesControlDiet,)
+    schedules = (SimpleCaloriesControlDiet, )
