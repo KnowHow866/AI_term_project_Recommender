@@ -1,49 +1,9 @@
-
-'''
-Write all test of system here
-If it become too large later, we would split this file 
-'''
-# local module
+from .abstract import AlgorithmAbstraction
 from app.model.db_manager import DBManager
-from app.model.models import ModelManager, User, Food, UserRecommendationReview, FoodPurchaseRecord
-from app.model.loader import Loader
-from app.algorithm.abstract import AlgorithmAbstraction
-    
-# pytest C:\Users\User\Documents\GitHub\AI_term_project_Recommender\tests\test_algorithm1.py     -s
-
-# pytest C:\Users\User\Documents\GitHub\AI_term_project_Recommender\tests\test_model.py
+from app.model.models import Food
 
 
-def test_loader():
-    DBManager.init_db(db_name = 'db4')
-
-    Loader.load(file_path= './data/food.json')
-    Loader.load(file_path= './data/user.json')
-
-    Loader.traverse_database()
-    
-def test_of_food_data():
-
-    session = DBManager.get_session()
-
-    
-    food_list = session.query(Food).order_by(Food.id.asc()).all()
-
-
-    assert len(food_list) == 295
-    
-def test_of_user_data():
-
-    session = DBManager.get_session()
-
-    
-    user_list = session.query(User).all()
-
-
-    assert len(user_list) == 200
-        
-
-class LossOneKgSchedule(AlgorithmAbstraction):
+class LoseOneKgSchedule(AlgorithmAbstraction):
 
     def __init__(self, days=1, target_cal = 0):
         
@@ -172,13 +132,7 @@ class LossOneKgSchedule(AlgorithmAbstraction):
         path += a_path
         
         return target_cal , path  
-        
-        
-    def get_one_kg_scedule(self):
 
-        loss, self.path = self.get_multiday_schedule(10, -7700, self.foodlist)
-        
-        
     def lose_one_kg_scedule(self):
 
         loss, self.path = get_multiday_schedule(10, 7700, self.foodlist)
@@ -188,30 +142,4 @@ class LossOneKgSchedule(AlgorithmAbstraction):
         r_f =   self.path.pop(0)
         
     
-        return r_f
-
-
-
-        
-    
-    
-def test_of_scedule():
-    x = LossOneKgSchedule()
-    r_f = x.recommend()
-    assert r_f.id > 0
-    assert len(x.path) == 29
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-# calories summary(nobs=295, minmax=(10.0, 829.0), mean=286.1423728813559, variance=21193.598708635996, skewness=0.7518591197686839, kurtosis=0.6468584853671056)
-# median calories = 260.0
+        return [ r_f ]
