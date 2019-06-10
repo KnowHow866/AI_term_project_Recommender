@@ -28,9 +28,14 @@ class FairAlgorithmComposite(AlgorithmAbstraction):
         reply_list = list()
         recommendation_list = [ algo.recommend() for algo in self.algorithms ]
 
+        done = False
         while recommendation_list:
+            if done: break
+
             for recommendation in recommendation_list:
-                if len(reply_list) == max_length: break
+                if len(reply_list) == max_length: 
+                    done = True
+                    break
                 if not recommendation:
                     recommendation_list.remove(recommendation)
                     continue

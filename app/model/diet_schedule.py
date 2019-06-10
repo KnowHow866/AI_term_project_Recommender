@@ -56,3 +56,7 @@ class SimpleCaloriesControlDiet(DietScheduleAbstract):
     @property
     def fat(self):
         return (self.calories * self.nutirtion_ratio['fat']) / 9
+
+class DietScheduleCollection():
+    defautl_schedule = SimpleCaloriesControlDiet
+    schedules = (SimpleCaloriesControlDiet,)

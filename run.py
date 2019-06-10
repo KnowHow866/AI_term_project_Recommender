@@ -18,9 +18,12 @@ parser.add_argument('-d', '--load_directory', dest='data_directory', help='Load 
 parser.add_argument('-e', '--echo_database', dest='echo_database', help='true or false, echo database opperation')
 parser.add_argument('-t', '--traverse_database', dest='traverse_database', help='true or false, traverse_database and print all data')
 
+# algorithm related args
+parser.add_argument('-a', '--algorithm', dest='algorithm', help='selected used algorithm')
+parser.add_argument('-p', '--user_proxy', dest='user_proxy', help='select a userProxy to evaluate algorithm, this argument will close the command line UI')
+
 if __name__ == '__main__':
     args = parser.parse_args()
-
     parser.print_help()
 
     # init DB

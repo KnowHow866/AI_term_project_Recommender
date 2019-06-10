@@ -13,7 +13,7 @@ class UserProxyAbstract(abc.ABC):
         super().__init__(*args, **kwargs)
         if user is None or diet_schedule is None: raise Exception('User and DietSchedule and must be provide')
         self.user = user
-        self.diet_schedule = diet_schedule
+        self.user.set_diet_schedule(diet_schedule=diet_schedule)
         self.application = application
 
     def set_application(self, application=None):
@@ -25,6 +25,7 @@ class UserProxyAbstract(abc.ABC):
         ''' return (True, 0.7) '''
         raise NotImplementedError
 
+    @property
     def accpet_ratio(self) -> 'float [0-1]':
         accpet_ratio = float(self.application.acception_count / self.application.recommendation_count)
         return round(accpet_ratio ,2)
@@ -36,7 +37,7 @@ class UserProxyAbstract(abc.ABC):
         '''
         return self.application.get_foods()
 
-    def choice_food(self):
+    def choice_food(self, is_echo=False):
         '''
         This function descript the process user decide to take food
         You can override if need it
@@ -47,19 +48,19 @@ class UserProxyAbstract(abc.ABC):
         '''
         # first consider recommended food
         recommended_foods = self.application.recommend()
-        food_in_recommendation = self._try_choice_food(food_list=recommended_foods)
+        food_in_recommendation = self._try_choice_food(food_list=recommended_foods, is_echo=is_echo)
         if food_in_recommendation is not None:
             self.application.reply_recommendation(food=food_in_recommendation, is_accept=True)
             return 
 
         # second consider available food
         avaiable_foods = self.get_avaiable_foods()
-        if self._try_choice_food(food_list=avaiable_foods, force=True) is not None: 
+        if self._try_choice_food(food_list=avaiable_foods, force=True, is_echo=is_echo) is not None: 
             return
 
         raise Exception('No food be take from proxy')
 
-    def _try_choice_food(self, food_list=list(), force=False) -> 'Food (is sucessfully choice food) or None':
+    def _try_choice_food(self, food_list=list(), force=False, is_echo=False) -> 'Food (is sucessfully choice food) or None':
         for food in food_list:
             is_accept, satisfication_ratio = self.utility(food=food)
             if is_accept:
@@ -69,7 +70,13 @@ class UserProxyAbstract(abc.ABC):
         if force: 
             values = list(map(lambda f: self.application.take_food(food=f)[1], food_list))
             idx = values.index(max(values))
-            self.application.take_food(food=food_list[idx])
+            self.application.take_food(food=food_list[idx], is_echo=is_echo)
             return food_list[idx]
         else:
             return None
+
+    def report(self):
+        print(' %s Report '.rjust(15, '-').ljust(15, '-'))
+        print('acception ratio: %s' % self.accpet_ratio)
+        print()
+        

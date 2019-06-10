@@ -1,6 +1,8 @@
 
 from app.model.db_manager import DBManager
 from app.model.models import ModelManager, User, Food, UserRecommendationReview, FoodPurchaseRecord
+from app.algorithm.collection import AlgorithmCollection
+from app.algorithm.evaluation.user_proxy_collection import UserProxyCollection
 # native module
 import random
 
@@ -12,7 +14,7 @@ class Application():
     session = None
     db_name = None
     _user_id = None
-    algorithm = None
+    algorithm = AlgorithmCollection.default_algo()
     
     recommendation_count = 0
     acception_count = 0
@@ -20,6 +22,7 @@ class Application():
     def __init__(self, db_name='db', *args, **kwrags):
         if db_name is None or not isinstance(db_name, str): raise Exception('please provide DB name to init service')
         self.db_name = db_name
+
         DBManager.init_db(db_name=db_name, is_echo=kwrags.get('db_is_echo', True))
         self.session = DBManager.get_session()
 
@@ -71,8 +74,10 @@ class Application():
         )
         review.save()
         
-    def take_food(self, food=None):
+    def take_food(self, food=None, is_echo=False):
         ''' invoke this function if user want to take this food '''
+        if is_echo is True:
+            print('%s perchase food : %s' % (self.user, food))
         record = FoodPurchaseRecord(
             user=self.user,
             food=food

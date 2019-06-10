@@ -1,6 +1,9 @@
-from .main import Application
+from .application import Application
 from app.model.db_manager import DBManager
 from app.model.models import User
+from app.algorithm.collection import AlgorithmCollection
+from app.algorithm.evaluation.user_proxy_collection import UserProxyCollection
+from app.model.diet_schedule import DietScheduleCollection
 # native module
 import os, sys
 
@@ -59,20 +62,26 @@ class Cmd():
         print(f'{text}'.rjust(30, '-').ljust(30, '-'))
         print()
 
-class CommandLineApplicationProxy(Application):
+class CommandLineApplicationProxy():
     '''
     This is a proxy of Main Class
     To make it can be access and manipuated from command line
     '''
     command_composite = None # CommandComposite
+    application = None
+    user_proxy = None 
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, db_name=DBManager.DEFAULT_DB_NAME ,*args, **kwargs):
+        super().__init__()
+        self.application = Application(db_name=db_name, db_is_echo=kwargs.get('db_is_echo', True))
         commands = [
-            Command(name='view_recommendation', patterns=['r'], invoke_function=self._view_recommandation),
-            Command(name='view_foods', patterns=['v'], invoke_function=lambda : Cmd.get_input('view_foods !!!')),
-            Command(name='edit_user_data', patterns=['e'], invoke_function=lambda : Cmd.get_input('edit_user_data !!!')),
-            Command(name='purchase_food', patterns=['p'], invoke_function=lambda : Cmd.get_input('purchase_food !!!')),
+            Command(name='set Algorithm', patterns=['a'], invoke_function=self._set_algorithm),
+            Command(name='set User Proxy', patterns=['p'], invoke_function=self._set_user_proxy),
+            Command(name='run Proxy Evaulation', patterns=['r'], invoke_function=self._run_proxy_evaulation),
+            # Command(name='view_recommendation', patterns=['r'], invoke_function=self._view_recommandation),
+            # Command(name='view_foods', patterns=['v'], invoke_function=lambda : Cmd.get_input('view_foods !!!')),
+            # Command(name='edit_user_data', patterns=['e'], invoke_function=lambda : Cmd.get_input('edit_user_data !!!')),
+            # Command(name='purchase_food', patterns=['p'], invoke_function=lambda : Cmd.get_input('purchase_food !!!')),
             Command(name='exit', patterns=['q'], invoke_function=self._exit_app),
         ]
         self.command_composite = CommandComposite(commands=commands)
@@ -96,7 +105,7 @@ class CommandLineApplicationProxy(Application):
             if user is None:
                 print('User not found !')
             else:
-                self.login(user)
+                self.application.login(user)
                 break
 
     def _exit_app(self):
@@ -109,7 +118,7 @@ class CommandLineApplicationProxy(Application):
             print('press \t%s to \t%s' % (command.patterns[0], command.name))
     
     def _view_recommandation(self):
-        recommended_foods = self.recommend()[:3]
+        recommended_foods = self.application.recommend()[:3]
         Cmd.title('RECOMMENDATIONS')
         for food in recommended_foods:
             food.show_detail()
@@ -119,3 +128,64 @@ class CommandLineApplicationProxy(Application):
         # choice order key
         # pagination
         pass
+
+    def _set_algorithm(self):
+        Cmd.clear()
+        Cmd.title('Choice an algorithm to use')
+        for idx, algo in enumerate(AlgorithmCollection.algos):
+            print('(%s): %s' % (idx, algo.__name__))
+
+        try:
+            choice_idx = int(Cmd.get_input('Enter number to choice algo to apply'))
+            AlgoClass = AlgorithmCollection.algos[choice_idx]
+            self.application.set_algorithm(algorithm=AlgoClass())
+        except Exception as e:
+            Cmd.get_input('Choice Fail, presse <enter> to continue (error: %s)' % e.__str__())
+            self._set_algorithm()
+
+    def _set_user_proxy(self):
+        # 1. choice diet schedule
+        Cmd.clear()
+        Cmd.title('First choice an diet_schedule to apply')
+        DietSchedule = None
+        for idx, schdule in enumerate(DietScheduleCollection.schedules):
+            print('(%s): %s' % (idx, schdule.__name__))
+
+        try:
+            choice_idx = int(Cmd.get_input('Enter number to choice diet schedule'))
+            DietSchedule = DietScheduleCollection.schedules[choice_idx]
+        except Exception as e:
+            Cmd.get_input('Choice Fail, presse <enter> to continue (error: %s)' % e.__str__())
+            return self._set_user_proxy()
+
+        # 2. choice user proxy
+        Cmd.clear()
+        Cmd.title('Then choice an userproxy to proxy')
+        for idx, proxy in enumerate(UserProxyCollection.proxys):
+            print('(%s): %s' % (idx, proxy.__name__))
+
+        try:
+            choice_idx = int(Cmd.get_input('Enter number to choice proxy'))
+            UserProxyClass = UserProxyCollection.proxys[choice_idx]
+            self.user_proxy = UserProxyClass(user=self.application.user, diet_schedule=DietSchedule, application=self.application)
+        except Exception as e:
+            Cmd.get_input('Choice Fail, presse <enter> to continue (error: %s)' % e.__str__())
+            return self._set_user_proxy()
+
+    def _run_proxy_evaulation(self):
+        '''
+        UserProxy will interact will this app 
+        1. avaiable food is defined in UserProxy
+        2. UserProxy will choice from avaiable food and recommended food
+        3. UserProxy will give satisfication
+        '''
+        interaction_times = 30
+
+        if self.user_proxy is None: self._set_user_proxy()
+
+        for idx in range(interaction_times):
+            print('\n%s time pickUp food'.ljust(10, '.') % idx)
+            self.user_proxy.choice_food(is_echo=True)
+
+        print('Accept Ratio: %s' % self.user_proxy.accpet_ratio)
+        Cmd.get_input('Presse <enter> to leave')

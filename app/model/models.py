@@ -72,6 +72,8 @@ class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
 
     _loader_fields = ('age', 'name', 'height', 'weight')
 
+    diet_schedule = None 
+
     def __str__(self):
         return '[User, %s] (%s)' % (self.id, self.name)
 
@@ -95,6 +97,9 @@ class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
                 (10 * self.weight) + (6.25 * self.height) - (5 * self.age) - 162
             )
     
+    def set_diet_schedule(self, diet_schedule : 'DietSchedule'):
+        self.diet_schedule = diet_schedule(user=self)
+
 class Food(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     __tablename__ = 'food'
     id = Column(Integer, primary_key=True)
