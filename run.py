@@ -8,7 +8,7 @@ import os
 # local module
 from app.model.db_manager import DBManager
 from app.model.loader import Loader
-from app.recommender.proxy import CommandLineApplicationProxy
+from app.recommender.application_proxy import CommandLineApplicationProxy
 
 from argparse import ArgumentParser
 parser = ArgumentParser(description=__doc__)

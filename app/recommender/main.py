@@ -12,6 +12,7 @@ class Application():
     session = None
     db_name = None
     _user_id = None
+    algorithm = None
 
     def __init__(self, db_name='db', *args, **kwrags):
         if db_name is None or not isinstance(db_name, str): raise Exception('please provide DB name to init service')
@@ -19,11 +20,14 @@ class Application():
         DBManager.init_db(db_name=db_name, is_echo=kwrags.get('db_is_echo', True))
         self.session = DBManager.get_session()
 
+    def set_algorithm(self, algorithm : 'Algorithm'):
+        self.algorithm = algorithm
+
     def __enter__(self):
         return self
 
     def __exit__(self,  exc_type, exc_val, exc_tb):
-        DBManager.detach_db()
+        pass
 
     @property
     def user(self):
