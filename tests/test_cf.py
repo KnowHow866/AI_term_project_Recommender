@@ -1,6 +1,6 @@
 from app.algorithm.collaborative_filtering import CollaborativeFiltering
 from app.model.db_manager import DBManager
-from app.model.models import User, Food, FoodPurchaseRecord, UserRecommendationReview
+from app.model.models import User, Food, UserRecommendationReview
 from app.algorithm.abstract import AlgorithmAbstraction
 from app.model.loader import Loader
 

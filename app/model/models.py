@@ -68,7 +68,6 @@ class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     gender_is_male = Column(Boolean, default=True)
 
     reviewed_foods = relationship('UserRecommendationReview', back_populates='user')
-    purchased_foods_record = relationship('FoodPurchaseRecord', back_populates='user')
 
     _loader_fields = ('age', 'name', 'height', 'weight')
 
@@ -111,7 +110,6 @@ class Food(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     fat = Column(Float)
 
     reviewed_users = relationship('UserRecommendationReview', back_populates='food')
-    purchased_users_record = relationship('FoodPurchaseRecord', back_populates='food')
     
     _loader_fields = ('name', 'calories')
 
@@ -142,16 +140,3 @@ class UserRecommendationReview(ModelManager.ModelBase, LoaderMixin, UtilMixin):
 
     _loader_fields = ('user_id', 'food_id', 'is_accept')
     _not_loaded_fields = ('created_datetime',)
-
-class FoodPurchaseRecord(ModelManager.ModelBase, UtilMixin):
-    __tablename__ = 'food_purchase_record'
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), back_populates='users')
-    food_id = Column(Integer, ForeignKey('food.id'), back_populates='foods')
-    user = relationship('User', back_populates='purchased_foods_record')
-    food = relationship('Food', back_populates='purchased_users_record')
-
-    created_datetime = Column(DateTime, default=datetime.datetime.utcnow)
-    
-    def __str__(self):
-        return '[FoodPurchaseRecord, %s] \t%s \t%s \t%s' % (self.id, self.user, self.food, self.created_datetime)

@@ -5,7 +5,7 @@ If it become too large later, we would split this file
 '''
 # local module
 from app.model.db_manager import DBManager
-from app.model.models import ModelManager, User, Food, UserRecommendationReview, FoodPurchaseRecord
+from app.model.models import ModelManager, User, Food, UserRecommendationReview
 from app.model.loader import Loader
 # native
 import random, string, os
@@ -34,11 +34,6 @@ def test_many_to_many_relationship():
     session.add(food)
     session.commit()
 
-    record = FoodPurchaseRecord(
-        user=user,
-        food=food
-    )
-    session.add(record)
     review = UserRecommendationReview(
         user=user,
         food=food,

@@ -10,7 +10,6 @@ class RandomAlgorithm(AlgorithmAbstraction):
     def recommend(self, max_lenght=10, *args, **kwargs):
         session = DBManager.get_session()
         avaiable_foods = session.query(Food).all()
-        print('All foods 2: %s' % len(avaiable_foods))
 
         if not avaiable_foods: return list()
         return [random.choice(avaiable_foods) for _ in range(max_lenght)]

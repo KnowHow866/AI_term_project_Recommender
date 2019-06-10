@@ -138,7 +138,7 @@ class CommandLineApplicationProxy():
         try:
             choice_idx = int(Cmd.get_input('Enter number to choice algo to apply'))
             AlgoClass = AlgorithmCollection.algos[choice_idx]
-            self.application.set_algorithm(algorithm=AlgoClass())
+            self.application.set_algorithm(algorithm=AlgoClass)
         except Exception as e:
             Cmd.get_input('Choice Fail, presse <enter> to continue (error: %s)' % e.__str__())
             self._set_algorithm()
@@ -187,5 +187,5 @@ class CommandLineApplicationProxy():
             print('\n%s time pickUp food'.ljust(10, '.') % idx)
             self.user_proxy.choice_food(is_echo=True)
 
-        print('Accept Ratio: %s' % self.user_proxy.accpet_ratio)
+        self.user_proxy.report()
         Cmd.get_input('Presse <enter> to leave')

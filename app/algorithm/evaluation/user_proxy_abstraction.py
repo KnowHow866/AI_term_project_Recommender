@@ -25,11 +25,6 @@ class UserProxyAbstract(abc.ABC):
         ''' return (True, 0.7) '''
         raise NotImplementedError
 
-    @property
-    def accpet_ratio(self) -> 'float [0-1]':
-        accpet_ratio = float(self.application.acception_count / self.application.recommendation_count)
-        return round(accpet_ratio ,2)
-        
     def get_avaiable_foods(self) -> 'Food[]':
         '''
         Return foods that is avaiable for proxyUser
@@ -48,35 +43,35 @@ class UserProxyAbstract(abc.ABC):
         '''
         # first consider recommended food
         recommended_foods = self.application.recommend()
-        food_in_recommendation = self._try_choice_food(food_list=recommended_foods, is_echo=is_echo)
+        food_in_recommendation = self._try_choice_food(food_list=recommended_foods)
         if food_in_recommendation is not None:
-            self.application.reply_recommendation(food=food_in_recommendation, is_accept=True)
             return 
 
         # second consider available food
         avaiable_foods = self.get_avaiable_foods()
-        if self._try_choice_food(food_list=avaiable_foods, force=True, is_echo=is_echo) is not None: 
+        if self._try_choice_food(food_list=avaiable_foods, force=True) is not None: 
             return
 
         raise Exception('No food be take from proxy')
 
-    def _try_choice_food(self, food_list=list(), force=False, is_echo=False) -> 'Food (is sucessfully choice food) or None':
+    def _try_choice_food(self, food_list=list(), force=False) -> 'Food (is sucessfully choice food) or None':
         for food in food_list:
             is_accept, satisfication_ratio = self.utility(food=food)
             if is_accept:
-                self.application.take_food(food=food)
+                self.application.reply_recommendation(food=food, is_accept=True)
                 return food
+            else:
+                self.application.reply_recommendation(food=food, is_accept=False)
         # no food be choiced, if force is True, take the food with hightest satisfication_ratio
         if force: 
             values = list(map(lambda f: self.application.take_food(food=f)[1], food_list))
             idx = values.index(max(values))
-            self.application.take_food(food=food_list[idx], is_echo=is_echo)
+            self.application.reply_recommendation(food=food_list[idx], is_accept=True)
             return food_list[idx]
         else:
             return None
 
     def report(self):
-        print(' %s Report '.rjust(15, '-').ljust(15, '-'))
-        print('acception ratio: %s' % self.accpet_ratio)
         print()
-        
+        print(' %s Report '.rjust(15, '-').ljust(15, '-') % self.__class__.__name__)
+       

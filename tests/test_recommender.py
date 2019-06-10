@@ -1,11 +1,11 @@
 
 from app.recommender.application import Application
 from app.model.db_manager import DBManager
-from app.model.models import User, Food, FoodPurchaseRecord, UserRecommendationReview
+from app.model.models import User, Food, UserRecommendationReview
 
 
 def test_application():
-    with Application(db_name='test', db_is_echo=False) as service:
+    with Application(db_name='test_application', db_is_echo=False) as service:
         # pre-prepared data
         Food(name='Apple').save()
         USER_NAME = 'serviceUser'
@@ -20,9 +20,7 @@ def test_application():
         assert type(food_for_test) is Food
         assert type(service.recommend()[0]) is Food
         service.reply_recommendation(food=food_for_test)
-        service.take_food(food=food_for_test)
         assert type(service.get_review_record()[0]) is UserRecommendationReview
-        assert type(service.get_purchased_record()[0]) is FoodPurchaseRecord
         
         search_foods = service.search_foods(search='a')
         assert type(search_foods) is list
