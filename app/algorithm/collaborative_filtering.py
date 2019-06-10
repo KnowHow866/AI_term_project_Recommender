@@ -17,9 +17,9 @@ class CollaborativeFiltering(AlgorithmAbstraction):
         user_review = review[review["user_id"] == user_id]
         food_not_yet_recommended = food[~food['food_id'].isin(user_review['food_id'])]
         recommend_list = pd.merge(food_not_yet_recommended, user_preference, on = "food_id").sort_values(by = ["ratings"], ascending = False).iloc[:num_recommendations]["food_id"].to_list()
-
+        
         if len(recommend_list) < 10:
-            recommned_list.extend(user_preference.iloc[:(10-len(recommend_list))]["food_id"].to_list())
+            recommend_list.extend(user_preference.iloc[:(10-len(recommend_list))]["food_id"].to_list())
 
         return recommend_list
 
@@ -40,6 +40,7 @@ class CollaborativeFiltering(AlgorithmAbstraction):
 
         # Data processing & prepare
         review['is_accept'] = np.where(review['is_accept']==True, 1, -1)
+        review = review.groupby(['user_id','food_id'])['is_accept'].sum().reset_index()
         rating_pivot = review.pivot(index='user_id',columns = 'food_id',values='is_accept').fillna(0)
 
         # Turn review to ratings matrix
