@@ -1,30 +1,15 @@
-'''
-test of content filtering recommender system
-'''
-from app.model.db_manager import DBManager
 from app.model.models import User, Food, FoodPurchaseRecord, UserRecommendationReview
+from app.model.db_manager import DBManager
 from app.algorithm.abstract import AlgorithmAbstraction
+
+from scipy.sparse.linalg import svds
 import pandas as pd
 import numpy as np
-# native
+
 import random, string
 
-"""
 class CollaborativeFiltering(AlgorithmAbstraction):
-    def _foo(self):
-        pass
-
-    def recommend(self, *args, **kwargs) -> 'Food[] , high recommendation prority in lower index ':
-        ''' Everytime client ask for recommendation will invoke this method, return a python object '''
-        session = DBManager.get_session()
-        food = pd.read_sql(session.query(Food).statement,session.bind)
-        user = pd.read_sql(session.query(User).statement,session.bind)
-        Review = pd.read_sql(session.query(UserRecommendationReview).statement,session.bind)
-
-        return []
-"""
-class CollaborativeFiltering(AlgorithmAbstraction):
-    def _recommend_for_user(prediction_df, user_id, food, review, num_recommendations = 10):
+    def _recommend_for_user(self, prediction_df, user_id, food, review, num_recommendations = 10):
         sorted_user_predictions = prediction_df.iloc[user_id - 1].sort_values(ascending=False)
         user_preference = pd.DataFrame(sorted_user_predictions).reset_index()
         user_preference.columns = ['food_id', 'ratings']
@@ -38,8 +23,8 @@ class CollaborativeFiltering(AlgorithmAbstraction):
 
         return recommend_list
 
-    def _id_to_food_list(self, recommendation_list):
-        result = self.session.query(Food).filter(Food.id.in_(recommendation_list)).all()
+    def _id_to_food_list(self, session, recommendation_list):
+        result = session.query(Food).filter(Food.id.in_(recommendation_list)).all()
         food_map = {food.id: food for food in result}
         food_list = [food_map[id] for id in recommendation_list]
         return food_list
@@ -63,12 +48,13 @@ class CollaborativeFiltering(AlgorithmAbstraction):
         r_demeaned = rating_df - user_ratings_mean.reshape(-1, 1)
 
         # Matrix factorization
-        U, sigma, Vt = svds(r_demeaned, k = 50)
+        U, sigma, Vt = svds(r_demeaned, k = 20)
         sigma = np.diag(sigma)
 
         prediction_all= np.dot(np.dot(U, sigma), Vt) + user_ratings_mean.reshape(-1, 1)
         prediction_df = pd.DataFrame(prediction_all, columns = rating_pivot.columns)
 
         recommendation_list = self._recommend_for_user(prediction_df, user_id, food, review)
-        food_list = self._id_to_food_list(recommendation_list)
+        food_list = self._id_to_food_list(session, recommendation_list)
+
         return food_list
