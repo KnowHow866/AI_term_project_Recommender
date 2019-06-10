@@ -58,15 +58,6 @@ def test_loader():
 def test_detach_db():
     DBManager.detach_db()
 
-def show_detail(self):
-    print()
-    print(' User: %s (id: %s)'.ljust(5, '-') % (self.name, self.id))
-    figures = ['gender', 'age', 'height', 'weight', 'basal_metabolic_rate']
-    for n in figures:
-        print('<%s> : %s' % (n, getattr(self, n)))
-
 def test_show_detail():
-    session = DBManager.get_session()
-    user = session.query(User).first()
-    show_detail(user)
-    assert user.basal_metabolic_rate > 0
+    user = User(name='Ray',height=180,weight=75,age=20,id=111)
+    user.show_detail()

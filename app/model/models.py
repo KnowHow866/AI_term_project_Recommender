@@ -72,10 +72,17 @@ class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
 
     _loader_fields = ('age', 'name', 'height', 'weight')
 
-    diet_schedule = None 
+    diet_schedule = None
 
     def __str__(self):
         return '[User, %s] (%s)' % (self.id, self.name)
+
+    def show_detail(self):
+        print()
+        print(' User: %s (id: %s)'.ljust(5, '-') % (self.name, self.id))
+        figures = ['gender', 'age', 'height', 'weight', 'basal_metabolic_rate']
+        for n in figures:
+            print('<%s> : %s' % (n, getattr(self, n)))
 
     @property
     def gender(self) -> 'male / female':
@@ -83,7 +90,7 @@ class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
         else: return 'female'
 
     @property
-    def bmi(self): 
+    def bmi(self):
         return round(float( self.weight / (self.height / 100)**2 ), 2)
 
     @property
@@ -96,7 +103,7 @@ class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
             return int(
                 (10 * self.weight) + (6.25 * self.height) - (5 * self.age) - 162
             )
-    
+
     def set_diet_schedule(self, diet_schedule : 'DietSchedule'):
         self.diet_schedule = diet_schedule(user=self)
 
@@ -112,7 +119,7 @@ class Food(ModelManager.ModelBase, LoaderMixin, UtilMixin):
 
     reviewed_users = relationship('UserRecommendationReview', back_populates='food')
     purchased_users_record = relationship('FoodPurchaseRecord', back_populates='food')
-    
+
     _loader_fields = ('name', 'calories')
 
     def __str__(self):
@@ -136,7 +143,7 @@ class UserRecommendationReview(ModelManager.ModelBase, LoaderMixin, UtilMixin):
 
     is_accept = Column(Boolean, default=False)
     created_datetime = Column(DateTime, default=datetime.datetime.utcnow)
-    
+
     def __str__(self):
         return '[UserReview, %s] Accept: %s (%s comment to %s)' % (self.id, self.is_accept, self.user, self.food)
 
@@ -152,6 +159,6 @@ class FoodPurchaseRecord(ModelManager.ModelBase, UtilMixin):
     food = relationship('Food', back_populates='purchased_users_record')
 
     created_datetime = Column(DateTime, default=datetime.datetime.utcnow)
-    
+
     def __str__(self):
         return '[FoodPurchaseRecord, %s] \t%s \t%s \t%s' % (self.id, self.user, self.food, self.created_datetime)
