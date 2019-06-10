@@ -61,7 +61,7 @@ class Application():
             if len(list(self.session.query(Food))) == 0: return []
             return [random.choice(list(self.session.query(Food))) for _ in range(max_length)]
         else:
-            return self.algorithm.recommend(max_length=max_length)
+            return self.algorithm.recommend(max_length=max_length, user=self.user)
 
     def reply_recommendation(self, food=None, is_accept=True):
         ''' User feedback to recommendation '''
