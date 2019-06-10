@@ -68,6 +68,5 @@ def show_detail(self):
 def test_show_detail():
     session = DBManager.get_session()
     user = session.query(User).first()
-    print(user.__str__())
     show_detail(user)
-    assert user.basal_metabolic_rate > 0 
+    assert user.basal_metabolic_rate > 0
