@@ -1,7 +1,7 @@
 
 '''
 Write all test of system here
-If it become too large later, we would split this file 
+If it become too large later, we would split this file
 '''
 # local module
 from app.model.db_manager import DBManager
@@ -40,11 +40,11 @@ def test_many_to_many_relationship():
         is_accept=False
     )
     session.add(review)
-    
+
     assert review.user is user
     assert review.food is food
     assert review.is_accept is False
-    
+
 def test_loader():
     file_path = os.path.join('tests', 'load.json')
     Loader.load(file_path=file_path)
@@ -52,3 +52,7 @@ def test_loader():
 
 def test_detach_db():
     DBManager.detach_db()
+
+def test_show_detail():
+    user = User(name='Ray',height=180,weight=75,age=20,id=111)
+    user.show_detail()

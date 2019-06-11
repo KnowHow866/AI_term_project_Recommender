@@ -44,6 +44,8 @@ def test_recommend():
 
     # Data processing & prepare
     review['is_accept'] = np.where(review['is_accept']==True, 1, -1)
+    review = review.groupby(['user_id','food_id'])['is_accept'].sum().reset_index()
+
     rating_pivot = review.pivot(index='user_id',columns = 'food_id',values='is_accept').fillna(0)
 
     rating_df = rating_pivot.as_matrix()
