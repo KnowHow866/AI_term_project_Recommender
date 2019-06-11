@@ -34,7 +34,7 @@ class Application():
         return self
 
     def __exit__(self,  exc_type, exc_val, exc_tb):
-        pass
+        DBManager.detach_db()
 
     @property
     def user(self):

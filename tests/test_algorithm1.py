@@ -5,7 +5,7 @@ If it become too large later, we would split this file
 '''
 # local module
 from app.model.db_manager import DBManager
-from app.model.models import ModelManager, User, Food, UserRecommendationReview, FoodPurchaseRecord
+from app.model.models import ModelManager, User, Food, UserRecommendationReview
 from app.model.loader import Loader
 from app.algorithm.abstract import AlgorithmAbstraction
     
@@ -181,7 +181,7 @@ class LossOneKgSchedule(AlgorithmAbstraction):
         
     def lose_one_kg_scedule(self):
 
-        loss, self.path = get_multiday_schedule(10, 7700, self.foodlist)
+        loss, self.path = self.get_multiday_schedule(10, 7700, self.foodlist)
         
         
     def recommend(self, *args, **kwargs):
