@@ -11,7 +11,6 @@ class LoseOneKgSchedule(AlgorithmAbstraction):
 
     def get_multiday_schedule(self, days, target_cal, food_list):
     
-        
         def cal_requirement(time):
             if time == 'night':
                 return self.requirement * 0.3

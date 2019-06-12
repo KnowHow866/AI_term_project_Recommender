@@ -138,7 +138,7 @@ class CommandLineApplicationProxy():
         try:
             choice_idx = int(Cmd.get_input('Enter number to choice algo to apply'))
             AlgoClass = AlgorithmCollection.algos[choice_idx]
-            self.application.set_algorithm(algorithm=AlgoClass)
+            self.application.set_algorithm(Algorithm=AlgoClass)
         except Exception as e:
             Cmd.get_input('Choice Fail, presse <enter> to continue (error: %s)' % e.__str__())
             self._set_algorithm()

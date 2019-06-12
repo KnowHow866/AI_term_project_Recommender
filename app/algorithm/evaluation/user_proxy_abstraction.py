@@ -71,6 +71,8 @@ class UserProxyAbstract(abc.ABC):
         else:
             return None
 
+        return None
+
     def report(self):
         print()
         print(' %s Report '.rjust(15, '-').ljust(15, '-') % self.__class__.__name__)
