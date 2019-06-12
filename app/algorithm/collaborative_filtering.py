@@ -1,3 +1,7 @@
+
+'''
+Recommend food using collaborative filtering with Singular Value Decomposition
+'''
 from app.model.models import User, Food, UserRecommendationReview
 from app.model.db_manager import DBManager
 from app.algorithm.abstract import AlgorithmAbstraction
@@ -5,8 +9,6 @@ from app.algorithm.abstract import AlgorithmAbstraction
 from scipy.sparse.linalg import svds
 import pandas as pd
 import numpy as np
-
-import random, string
 
 class CollaborativeFiltering(AlgorithmAbstraction):
     def _recommend_for_user(self, prediction_df, user_id, food, review, num_recommendations=10):
