@@ -73,6 +73,9 @@ class Application():
         )
         review.save()
         self.algorithm.user_take_food_hook(recommendation_review=review)
+        
+        if is_accept:
+            print(f'{self.user.name} \taccept food \t{food.name}')
 
     def get_review_record(self):
         return (self.user).reviewed_foods

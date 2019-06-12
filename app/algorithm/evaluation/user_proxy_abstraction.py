@@ -9,6 +9,9 @@ class UserProxyAbstract(abc.ABC):
         1. provide 'utility function' to measure how a recommendtion match the proxy's preference
         2. explore 'accpet ratio' for recommendations algorithms apply
     '''
+    _total_view_recommendation_count = 0
+    _accepted_recommendation_count = 0
+
     def __init__(self, user : 'User', diet_schedule : 'DietSchedule' , application=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if user is None or diet_schedule is None: raise Exception('User and DietSchedule and must be provide')
@@ -45,6 +48,7 @@ class UserProxyAbstract(abc.ABC):
         recommended_foods = self.application.recommend()
         food_in_recommendation = self._try_choice_food(food_list=recommended_foods)
         if food_in_recommendation is not None:
+            print('recommendation is acceped !')
             return 
 
         # second consider available food
@@ -56,15 +60,17 @@ class UserProxyAbstract(abc.ABC):
 
     def _try_choice_food(self, food_list=list(), force=False) -> 'Food (is sucessfully choice food) or None':
         for food in food_list:
+            self._total_view_recommendation_count += 1
             is_accept, satisfication_ratio = self.utility(food=food)
             if is_accept:
+                self._accepted_recommendation_count += 1
                 self.application.reply_recommendation(food=food, is_accept=True)
                 return food
             else:
                 self.application.reply_recommendation(food=food, is_accept=False)
         # no food be choiced, if force is True, take the food with hightest satisfication_ratio
         if force: 
-            values = list(map(lambda f: self.application.take_food(food=f)[1], food_list))
+            values = list(map(lambda f: self.utility(food=f)[1], food_list))
             idx = values.index(max(values))
             self.application.reply_recommendation(food=food_list[idx], is_accept=True)
             return food_list[idx]
@@ -76,4 +82,4 @@ class UserProxyAbstract(abc.ABC):
     def report(self):
         print()
         print(' %s Report '.rjust(15, '-').ljust(15, '-') % self.__class__.__name__)
-       
+        print('accept ratio: \t%s percent' % round(float(100*self._accepted_recommendation_count / self._total_view_recommendation_count) ,2))

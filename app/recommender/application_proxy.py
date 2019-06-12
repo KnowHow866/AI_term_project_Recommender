@@ -5,7 +5,7 @@ from app.algorithm.collection import AlgorithmCollection
 from app.algorithm.evaluation.user_proxy_collection import UserProxyCollection
 from app.model.diet_schedule import DietScheduleCollection
 # native module
-import os, sys
+import os, sys, random
 
 class Command():
     ''' Encapulation of command '''
@@ -100,6 +100,10 @@ class CommandLineApplicationProxy():
     def _login(self):
         session = DBManager.get_session()
         while True:
+            print('\nRandom User List')
+            for user in random.choices(session.query(User).all(), k=10):
+                print(user)
+
             username = Cmd.get_input('Please enter user name to login')
             user = session.query(User).filter(User.name==username).one_or_none()
             if user is None:
@@ -114,6 +118,7 @@ class CommandLineApplicationProxy():
     def _show_main_page(self):
         Cmd.clear()
         Cmd.title(' Welcome to AI Eat ! ')
+        self.application.user.show_detail()
         for command in self.command_composite.commands:
             print('press \t%s to \t%s' % (command.patterns[0], command.name))
     

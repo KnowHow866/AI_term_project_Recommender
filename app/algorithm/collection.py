@@ -11,7 +11,7 @@ from .markov_lose_one_kg import ModelBasedAgentOfMarkovVerionLoseOneKg
 from .content_based_filtering import ContentBasedFiltering
 
 class AlgorithmCollection():
-    default_algo = FairAlgorithmComposite
+    default_algo = RandomAlgorithm
     algos = (
         RandomAlgorithm, 
         CollaborativeFiltering,

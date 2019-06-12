@@ -77,11 +77,11 @@ class User(ModelManager.ModelBase, LoaderMixin, UtilMixin):
         return '[User, %s] (%s)' % (self.id, self.name)
 
     def show_detail(self):
-        print()
-        print(' User: %s (id: %s)'.ljust(5, '-') % (self.name, self.id))
+        print('\n<User>: %s \t(id: %s)'.ljust(5, '-') % (self.name, self.id))
         figures = ['gender', 'age', 'height', 'weight', 'basal_metabolic_rate']
         for n in figures:
-            print('<%s> : %s' % (n, getattr(self, n)))
+            print('<%s> : \t%s' % (n, getattr(self, n)))
+        print()
 
     @property
     def gender(self) -> 'male / female':
