@@ -9,8 +9,6 @@ class LoseOneKgSchedule(AlgorithmAbstraction):
         self.requirement = 1600
         self.first_time = True
 
- 
-
     def get_multiday_schedule(self, days, target_cal, food_list):
     
         
@@ -30,8 +28,7 @@ class LoseOneKgSchedule(AlgorithmAbstraction):
                 # a_list is a sorted list of Food instance, ascendingly sorted by calories
                 min_error = 100000
                 best_food = a_list[0]
-                
-                
+                  
                 min_cal, max_cal = requirement*0.5, requirement*1.5
                 for food in a_list:
                     cal = food.calories
@@ -48,8 +45,6 @@ class LoseOneKgSchedule(AlgorithmAbstraction):
                         best_food = food
 
                 return best_food
-
-
 
             best_food = find_food_closet_to_target(requirement-target_calories, food_list, 0.5, time)
             return best_food, best_food.calories - requirement + target_calories
@@ -102,9 +97,6 @@ class LoseOneKgSchedule(AlgorithmAbstraction):
 
             return min_nest_loss, best_path
     
-    
-    
-    
         # 真正計算path
         path = []
         tem_food_list = food_list
@@ -119,7 +111,6 @@ class LoseOneKgSchedule(AlgorithmAbstraction):
                 if x not in path[-9:]:
                     tem_food_list.append(x) 
             
-        
         target_cal, a_path = get_the_score_of_a_specific_date(3,-1, target_cal,[], tem_food_list)
         path += a_path
         
