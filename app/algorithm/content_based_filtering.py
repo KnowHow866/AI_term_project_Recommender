@@ -11,11 +11,14 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 
 class ContentBasedFiltering(AlgorithmAbstraction):
-    def _find_similar_food(food_id, food):
+    def _find_similar_food(self, food_id, food, positive=1):
         count = CountVectorizer()
         count_matrix = count.fit_transform(food['name'])
         cosine_sim = cosine_similarity(count_matrix, count_matrix)
-        score_series = pd.Series(cosine_sim[food_id]).sort_values(ascending = False)
+        if positive == 1:
+            score_series = pd.Series(cosine_sim[food_id]).sort_values(ascending = False)
+        else: # finds the least similar
+            score_series = pd.Series(cosine_sim[food_id]).sort_values(ascending = True)
         similar_food = list(score_series.iloc[1:11].index)
 
         return similar_food
@@ -27,20 +30,20 @@ class ContentBasedFiltering(AlgorithmAbstraction):
 
         return food_list
 
-    def _recommend_food(review, food):
+    def _recommend_food(self,review, food):
         user_review = review[review['is_accept']!=0]
         if user_review.shape[0] == 0:
             usre_review = review
             top_5_food = user_review.iloc[0:5]["food_id"]
             recommendation_list = []
             for food_id in top_5_food:
-                recommendation_list.extend(_find_similar_food(food_id, food, 0))
+                recommendation_list.extend(self._find_similar_food(food_id, food, 0))
             final_recommendation = pd.Series(recommendation_list).value_counts().index.to_list()[:10]
         else:
             top_5_food = user_review.iloc[0:5]["food_id"]
             recommendation_list = []
             for food_id in top_5_food:
-                recommendation_list.extend(_find_similar_food(food_id, food, 1))
+                recommendation_list.extend(self._find_similar_food(food_id, food, 1))
             final_recommendation = pd.Series(recommendation_list).value_counts().index.to_list()[:10]
         return final_recommendation
 
