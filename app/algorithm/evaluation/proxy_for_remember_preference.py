@@ -13,7 +13,7 @@ class ProxyForRememberPreference(UserProxyAbstract):
         super().__init__(*args, **kwargs)
         
         self.recommend_dict = dict() # a dict 把推薦食物清單內0,1,2,3~9 分別推薦food_id 尾數的次數統計
-        slef.eaten_calories = 0
+        
         self.counter = 0 # 讓我知道目前是推薦到哪一個食物(will reset everytime accepting a food)
         
         for i in range(1,11):
