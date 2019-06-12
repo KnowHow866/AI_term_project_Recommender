@@ -18,7 +18,7 @@ class ProxyForRememberPreference(UserProxyAbstract):
         
         for i in range(1,11):
             for j in range(0,5):
-                self.recommend_dict[i][j] = 0
+                self.recommend_dict[i] = {j: 0 }
                 
         self.accept_index_list = []#記住每次accept食物的時候 是推薦到哪一個index時才接受的
             
