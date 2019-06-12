@@ -117,12 +117,7 @@ class Food(ModelManager.ModelBase, LoaderMixin, UtilMixin):
     fat = Column(Float)
 
     reviewed_users = relationship('UserRecommendationReview', back_populates='food')
-<<<<<<< HEAD
     
-=======
-    purchased_users_record = relationship('FoodPurchaseRecord', back_populates='food')
-
->>>>>>> 2827b17c3df5d9fed0e429212291b3379103ac7a
     _loader_fields = ('name', 'calories')
 
     def __str__(self):
@@ -152,19 +147,3 @@ class UserRecommendationReview(ModelManager.ModelBase, LoaderMixin, UtilMixin):
 
     _loader_fields = ('user_id', 'food_id', 'is_accept')
     _not_loaded_fields = ('created_datetime',)
-<<<<<<< HEAD
-=======
-
-class FoodPurchaseRecord(ModelManager.ModelBase, UtilMixin):
-    __tablename__ = 'food_purchase_record'
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), back_populates='users')
-    food_id = Column(Integer, ForeignKey('food.id'), back_populates='foods')
-    user = relationship('User', back_populates='purchased_foods_record')
-    food = relationship('Food', back_populates='purchased_users_record')
-
-    created_datetime = Column(DateTime, default=datetime.datetime.utcnow)
-
-    def __str__(self):
-        return '[FoodPurchaseRecord, %s] \t%s \t%s \t%s' % (self.id, self.user, self.food, self.created_datetime)
->>>>>>> 2827b17c3df5d9fed0e429212291b3379103ac7a
