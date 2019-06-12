@@ -6,30 +6,22 @@ from app.model.models import Food
 class LoseOneKgSchedule(AlgorithmAbstraction):
 
     def __init__(self, days=1, target_cal = 0):
-        
-        min_cal, max_cal = 240, 960
-        self.session = DBManager.get_session()
-        self.foodlist = self.session.query(Food).filter(min_cal<Food.calories).filter( Food.calories < max_cal).order_by(Food.calories.asc()).all()
-        self.lose_one_kg_scedule()
-        
-        
-        
-    
+        self.requirement = 1600
+        self.first_time = True
 
+ 
 
     def get_multiday_schedule(self, days, target_cal, food_list):
     
         
         def cal_requirement(time):
-            daily_requirement =  1600
-            morning_r, noon_r, night_r = daily_requirement*0.3, daily_requirement*0.4, daily_requirement*0.3
             if time == 'night':
-                requirement =  night_r #480
+                return self.requirement * 0.3
             elif time == 'noon':
-                requirement =  noon_r #640
+                return self.requirement * 0.4
             elif time == 'morning':
-                requirement =  morning_r #480
-            return requirement
+                return self.requirement * 0.3
+
                 
         def recommend_food(target_calories, time = 'night', food_list = []):
 
@@ -98,7 +90,7 @@ class LoseOneKgSchedule(AlgorithmAbstraction):
                     
                     next_score = abs( food.calories - requirement + now_target_cal + next_loss )#早餐吃80 要480, target是-100, 那吃完後是-500
                     
-                    print(food.calories, requirement, now_target_cal , next_score)
+                    
                     
                     if next_score <10:
                         return next_loss, final_path
@@ -113,7 +105,7 @@ class LoseOneKgSchedule(AlgorithmAbstraction):
     
     
     
-    
+        # 真正計算path
         path = []
         tem_food_list = food_list
         while days > 1:
@@ -123,8 +115,8 @@ class LoseOneKgSchedule(AlgorithmAbstraction):
             days -=1 
             target_cal += ( loss - today_target_cal)
             tem_food_list = []
-            for x in food_list:
-                if x not in path[-3:]:
+            for x in self.foodlist:
+                if x not in path[-9:]:
                     tem_food_list.append(x) 
             
         
@@ -135,10 +127,23 @@ class LoseOneKgSchedule(AlgorithmAbstraction):
 
     def lose_one_kg_scedule(self):
 
-        loss, self.path = get_multiday_schedule(10, 7700, self.foodlist)
+        loss, self.path = self.get_multiday_schedule(10, self.requirement * 4.8 , self.foodlist)
         
         
-    def recommend(self, *args, **kwargs):
+    def recommend(self, user=None, *args, **kwargs):
+        if self.first_time:
+            self.first_time = False
+            try:
+                self.requirement = user.basal_metabolic_rate
+            except:
+                pass
+            
+            self.min_cal, self.max_cal = self.requirement * 0.15, self.requirement * 0.6
+            self.session = DBManager.get_session()
+            self.foodlist = self.session.query(Food).filter(self.min_cal<Food.calories).filter( Food.calories < self.max_cal).order_by(Food.calories.asc()).all()
+
+            self.lose_one_kg_scedule()
+            
         r_f =   self.path.pop(0)
         
     
