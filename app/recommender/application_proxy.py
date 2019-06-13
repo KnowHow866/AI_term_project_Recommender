@@ -170,7 +170,7 @@ class CommandLineApplicationProxy():
         Cmd.clear()
         Cmd.title('Then choice an userproxy to proxy')
         for idx, proxy in enumerate(UserProxyCollection.proxys):
-            print('(%s): %s' % (idx, proxy.__name__))
+            print('(%s): %s \t%s' % (idx, proxy.__name__, proxy._description))
 
         try:
             choice_idx = int(Cmd.get_input('Enter number to choice proxy'))
