@@ -75,6 +75,7 @@ class CommandLineApplicationProxy():
         super().__init__()
         self.application = Application(db_name=db_name, db_is_echo=kwargs.get('db_is_echo', True))
         commands = [
+            Command(name='login anothor user', patterns=['l'], invoke_function=self._relogin),
             Command(name='set Algorithm', patterns=['a'], invoke_function=self._set_algorithm),
             Command(name='set User Proxy', patterns=['p'], invoke_function=self._set_user_proxy),
             Command(name='run Proxy Evaulation', patterns=['r'], invoke_function=self._run_proxy_evaulation),
@@ -112,6 +113,11 @@ class CommandLineApplicationProxy():
                 self.application.login(user)
                 break
 
+    def _relogin(self):
+        self.application.logout()
+        Cmd.clear()
+        return self._login()
+
     def _exit_app(self):
         sys.exit()
 
@@ -119,6 +125,8 @@ class CommandLineApplicationProxy():
         Cmd.clear()
         Cmd.title(' Welcome to AI Eat ! ')
         self.application.user.show_detail()
+        print('Algorithm: ', self.application.algorithm)
+        print('UserProxy: ', self.user_proxy, '\n')
         for command in self.command_composite.commands:
             print('press \t%s to \t%s' % (command.patterns[0], command.name))
     
@@ -129,16 +137,11 @@ class CommandLineApplicationProxy():
             food.show_detail()
         Cmd.get_input('press <enter> to leave')
 
-    def _view_foods(self):
-        # choice order key
-        # pagination
-        pass
-
     def _set_algorithm(self):
         Cmd.clear()
         Cmd.title('Choice an algorithm to use')
         for idx, algo in enumerate(AlgorithmCollection.algos):
-            print('(%s): %s' % (idx, algo.__name__))
+            print(f'({idx}): {algo()}')
 
         try:
             choice_idx = int(Cmd.get_input('Enter number to choice algo to apply'))
@@ -184,13 +187,18 @@ class CommandLineApplicationProxy():
         2. UserProxy will choice from avaiable food and recommended food
         3. UserProxy will give satisfication
         '''
-        interaction_times = 30
+        interaction_times = 120
 
         if self.user_proxy is None: self._set_user_proxy()
 
         for idx in range(interaction_times):
-            print('\n%s time pickUp food'.ljust(10, '.') % idx)
-            self.user_proxy.choice_food(is_echo=True)
+            print(f'\n{idx} time pickUp food'.ljust(120, '-'))
+            food, is_recommendation_accepted, recommendation_viwed_count, total_food_viewed_count, satisfication_ratio = self.user_proxy.choice_food(is_echo=True)
+            print(f'is_recommendation_accepted: \t{is_recommendation_accepted}')
+            print(f'recommendation_viwed_count: \t{recommendation_viwed_count}')
+            print(f'total_food_viewed_count: \t{total_food_viewed_count}')
+            print(f'satisfication_ratio: \t{satisfication_ratio}')
+            food.show_detail()
 
         self.user_proxy.report()
         Cmd.get_input('Presse <enter> to leave')

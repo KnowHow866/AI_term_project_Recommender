@@ -12,6 +12,10 @@ class AlgorithmAbstraction(abc.ABC):
     Interface component beyond this module use to interact with algorithm
     add any function here if you want to expose it
     '''
+    _description = ''
+
+    def __str__(self):
+        return f'{self.__class__.__name__} \t{self._description}'
 
     def init_instance(self, *args, **kwargs) -> 'default to void':
         ''' every time algorithm instance is created will call this to init '''

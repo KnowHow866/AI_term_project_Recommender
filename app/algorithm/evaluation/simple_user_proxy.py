@@ -6,7 +6,7 @@ class SimpleUserproxy(UserProxyAbstract):
     '''
     A proxy that always take a const value of possibility to accept recommendation
     '''
-    accept_possibility = 0.1
+    accept_possibility = 0.5
 
     def __init__(self, accept_possibility=0.8, *args, **kwargs):
         super().__init__(*args, **kwargs)

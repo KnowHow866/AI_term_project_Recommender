@@ -4,7 +4,6 @@ from app.model.models import ModelManager, User, Food, UserRecommendationReview
 from sqlalchemy import desc
 import numpy as np
 
-
 class ModelBasedAgentOfMarkovVerionLoseOneKg(AlgorithmAbstraction):
 
     def __init__(self, days=1, target_cal = 0):
@@ -83,7 +82,7 @@ class ModelBasedAgentOfMarkovVerionLoseOneKg(AlgorithmAbstraction):
 
         # 開始處理        
         requirement = self.cal_requirement(self.time)
-        this_meal_target = int( self.target_cal / self.meals_left )
+        this_meal_target = int( self.target_cal / (self.meals_left or 1.0) )
         r_list = self.recommend_food_with_possibility(this_meal_target, requirement, self.foodlist)
 
         # update 

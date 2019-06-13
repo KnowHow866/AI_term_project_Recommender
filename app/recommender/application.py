@@ -4,7 +4,7 @@ from app.model.models import ModelManager, User, Food, UserRecommendationReview
 from app.algorithm.collection import AlgorithmCollection
 from app.algorithm.evaluation.user_proxy_collection import UserProxyCollection
 # native module
-import random
+import random, traceback
 
 class Application():
     '''
@@ -62,7 +62,11 @@ class Application():
             if len(list(self.session.query(Food))) == 0: return []
             return [random.choice(list(self.session.query(Food))) for _ in range(max_length)]
         else:
-            return self.algorithm.recommend(max_length=max_length, user=self.user)[:max_length]
+            try:
+                return self.algorithm.recommend(user=self.user)[:max_length]
+            except Exception as e:
+                traceback.print_exc()
+                return list()
 
     def reply_recommendation(self, food=None, is_accept=True):
         ''' User feedback to recommendation '''

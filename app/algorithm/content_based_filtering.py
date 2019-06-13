@@ -11,6 +11,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 
 class ContentBasedFiltering(AlgorithmAbstraction):
+    _description = '(Content-based filtering aims for recommending foods similar to what the user has accepted)'
+
     def _find_similar_food(self, food_id, food, positive=1):
         count = CountVectorizer()
         count_matrix = count.fit_transform(food['name'])
