@@ -37,19 +37,19 @@ class ProxyForRememberPreference(UserProxyAbstract):
         self.recommend_dict[self.counter][the_id_mod_five] += 1
 
         if the_id_mod_five == 1:
-            if random.random() >= 0.2:
+            if random.random() >= 0.85:
                 return self.accept(0.8)
 
             return    self.reject(0.3)
             
         elif the_id_mod_five == 2:
-            if random.random() >= 0.5:
+            if random.random() >= 0.9:
                 return self.accept(0.6)
                 
             return   self.reject(0.2)
             
         else:
-            if random.random() >= 0.9:
+            if random.random() >= 0.99:
                 return self.accept(0.4)
                 
             return   self.reject(0.1)

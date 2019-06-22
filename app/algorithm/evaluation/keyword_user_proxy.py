@@ -19,6 +19,9 @@ class KeywordUserProxy(UserProxyAbstract, FoodFrequencyMixin):
         )
         self._desired_pattern = sorted_food_pattern_tuple[0][0]
 
+    def __str__(self):
+        return f'{self.__class__.__name__} \t(lookup: {self._desired_pattern})'
+
     def utility(self, food=None):
         if self._desired_pattern in food.name.lower():
             return (True, 1.0)

@@ -10,7 +10,12 @@ about Composite pattern, you can ref:
     1.https://openhome.cc/Gossip/DesignPattern/CompositePattern.htm
 '''
 from .abstract import AlgorithmAbstraction
+from .collaborative_filtering import CollaborativeFiltering
 from .random_algo import RandomAlgorithm
+from .lose_one_kg import LoseOneKgSchedule
+from .markov_lose_one_kg import ModelBasedAgentOfMarkovVerionLoseOneKg
+from .content_based_filtering import ContentBasedFiltering
+
 
 class FairAlgorithmComposite(AlgorithmAbstraction):
     ''' Most recommeded foods by algos will be uesed, or it will random choice '''
@@ -19,14 +24,18 @@ class FairAlgorithmComposite(AlgorithmAbstraction):
     def __init__(self, algorithms=list(), *args, **kwargs):
         if len(algorithms) == 0:
             self.algorithms = [
-                RandomAlgorithm(),
+                RandomAlgorithm(), 
+                CollaborativeFiltering(),
+                ContentBasedFiltering(),
+                LoseOneKgSchedule(),
+                ModelBasedAgentOfMarkovVerionLoseOneKg()
             ]
         else:
             self.algorithms = algorithms
 
-    def recommend(self, max_length=10, *args, **kwargs):
+    def recommend(self, user=None, max_length=10, *args, **kwargs):
         reply_list = list()
-        recommendation_list = [ algo.recommend() for algo in self.algorithms ]
+        recommendation_list = [ algo.recommend(user=user) for algo in self.algorithms ]
 
         done = False
         while recommendation_list:

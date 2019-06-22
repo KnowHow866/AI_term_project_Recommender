@@ -9,24 +9,35 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
+# native module
+import random
 
 class ContentBasedFiltering(AlgorithmAbstraction):
-    def _find_similar_food(self, food_id, food, positive=1):
-        count = CountVectorizer()
-        count_matrix = count.fit_transform(food['name'])
-        cosine_sim = cosine_similarity(count_matrix, count_matrix)
-        if positive == 1:
-            score_series = pd.Series(cosine_sim[food_id]).sort_values(ascending = False)
-        else: # finds the least similar
-            score_series = pd.Series(cosine_sim[food_id]).sort_values(ascending = True)
-        similar_food = list(score_series.iloc[1:11].index)
+    _description = '(Content-based filtering aims for recommending foods similar to what the user has accepted)'
 
-        return similar_food
+    def _find_similar_food(self, food_id, food, positive=1) -> 'food.id[]':
+        try:
+            count = CountVectorizer()
+            count_matrix = count.fit_transform(food['name'])
+            cosine_sim = cosine_similarity(count_matrix, count_matrix)
+            if positive == 1:
+                score_series = pd.Series(cosine_sim[food_id]).sort_values(ascending = False)
+            else: # finds the least similar
+                score_series = pd.Series(cosine_sim[food_id]).sort_values(ascending = True)
+            similar_food = list(score_series.iloc[1:11].index)
+
+            return similar_food
+        except Exception as e:
+            session = DBManager.get_session()
+            random_food = random.choice(session.query(Food).all())
+            return list([random_food.id])
 
     def _id_to_food_list(self, session, recommendation_list):
         result = session.query(Food).filter(Food.id.in_(recommendation_list)).all()
         food_map = {food.id: food for food in result}
-        food_list = [food_map[id] for id in recommendation_list]
+        food_list = list()
+        for food_id in recommendation_list:
+            if food_id in food_map: food_list.append(food_map[food_id])
 
         return food_list
 

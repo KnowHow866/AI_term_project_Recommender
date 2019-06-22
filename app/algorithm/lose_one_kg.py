@@ -114,19 +114,23 @@ class LoseOneKgSchedule(AlgorithmAbstraction):
     def lose_one_kg_scedule(self):
         loss, self.path = self.get_multiday_schedule(10, self.requirement * 4.8 , self.foodlist)      
 
+    def prepare_recommedation_foods(self):
+        try:
+            self.requirement = user.basal_metabolic_rate
+        except:
+            pass
+        
+        self.min_cal, self.max_cal = self.requirement * 0.15, self.requirement * 0.6
+        self.session = DBManager.get_session()
+        self.foodlist = self.session.query(Food).filter(self.min_cal<Food.calories).filter( Food.calories < self.max_cal).order_by(Food.calories.asc()).all()
+
+        self.lose_one_kg_scedule()
+
     def recommend(self, user=None, *args, **kwargs):
         if self.first_time:
             self.first_time = False
-            try:
-                self.requirement = user.basal_metabolic_rate
-            except:
-                pass
-            
-            self.min_cal, self.max_cal = self.requirement * 0.15, self.requirement * 0.6
-            self.session = DBManager.get_session()
-            self.foodlist = self.session.query(Food).filter(self.min_cal<Food.calories).filter( Food.calories < self.max_cal).order_by(Food.calories.asc()).all()
+            self.prepare_recommedation_foods()
 
-            self.lose_one_kg_scedule()
-
-        r_f =   self.path.pop(0)
-        return [ r_f ]
+        if not self.path: 
+            self.prepare_recommedation_foods()
+        return [ self.path.pop(0) ]

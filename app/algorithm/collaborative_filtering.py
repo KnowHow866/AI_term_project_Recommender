@@ -11,6 +11,8 @@ import pandas as pd
 import numpy as np
 
 class CollaborativeFiltering(AlgorithmAbstraction):
+    _description = '(Collaborative filtering aims for recommending the users items that their peers like)'
+
     def _recommend_for_user(self, prediction_df, user_id, food, review, num_recommendations=10):
         sorted_user_predictions = prediction_df.iloc[user_id - 1].sort_values(ascending=False)
         user_preference = pd.DataFrame(sorted_user_predictions).reset_index()

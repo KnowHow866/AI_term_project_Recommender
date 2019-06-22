@@ -21,8 +21,13 @@ class KeywordEnhanceUserProxy(UserProxyAbstract, FoodFrequencyMixin):
             reverse=True
         )
         self._consider_patterns = [tup[0] for tup in sorted_food_pattern_tuple[:self.CONSIDER_NUMBER]]
-        print('Consieder pattern')
-        print(self._consider_patterns)
+
+    def __str__(self):
+        lookup_pattern = ''
+        for idx, p in enumerate(self._consider_patterns):
+            if idx < self.ACCEPT_RANK:
+                lookup_pattern += f' {p},'
+        return f'{self.__class__.__name__} \t(lookup: {lookup_pattern})'
 
     @property
     def satisfication_degree(self):
