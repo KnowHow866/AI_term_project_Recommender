@@ -52,7 +52,7 @@ class CollaborativeFiltering(AlgorithmAbstraction):
         r_demeaned = rating_df - user_ratings_mean.reshape(-1, 1)
 
         # Matrix factorization
-        U, sigma, Vt = svds(r_demeaned, k = 20)
+        U, sigma, Vt = svds(r_demeaned, k = 10)
         sigma = np.diag(sigma)
 
         prediction_all= np.dot(np.dot(U, sigma), Vt) + user_ratings_mean.reshape(-1, 1)
