@@ -2,7 +2,7 @@ argumentparser==1.2.1
 astroid==2.2.5
 atomicwrites==1.3.0
 attrs==19.1.0
-certifi==2019.3.9
+certifi==2022.12.7
 isort==4.3.20
 joblib==0.13.2
 lazy-object-proxy==1.4.1
